@@ -173,12 +173,15 @@
     let onlineQuotes = [];
     let currentQuoteRecord = null;
     let quoteSceneIndex=-1;
+    let lastDisplayedQuoteText="";
     function setDisplayedQuote({text,author,category,sourceLabel,sourceUrl,recordUrl,kind="external"}){
+      const isNewQuote=text!==lastDisplayedQuoteText;
       const quoteCard=document.querySelector(".quote-card");
-      if(quoteCard){
+      if(quoteCard&&isNewQuote){
         quoteSceneIndex=(quoteSceneIndex+1)%5;
         quoteCard.dataset.scene=String(quoteSceneIndex);
       }
+      lastDisplayedQuoteText=text;
       currentQuoteRecord={text,author,category,sourceLabel,sourceUrl,recordUrl,kind};
       quoteEl.textContent=text;
       categoryEl.textContent=category||"A LITTLE LIFT";
@@ -223,18 +226,21 @@
     async function showRandomQuote(){
       const status=document.getElementById("save-status");
       const pool=onlineQuotes.filter(moodMatches);
-      if(pool.length && (Math.random()<0.8 || !quoteItems.some(item=>item.moods.includes(selectedMood)))){
+      const canUseOnline=pool.length && (Math.random()<0.8 || !quoteItems.some(item=>item.moods.includes(selectedMood)));
+      if(canUseOnline){
         const candidates=pool.filter(item=>item.text!==quoteEl.textContent);
-        const picked=(candidates.length?candidates:pool)[Math.floor(Math.random()*(candidates.length?candidates:pool).length)];
-        setDisplayedQuote(picked);
-        currentQuote=-1;
-        rotationCount++;
-        status.textContent="Online quote with attribution and source link. "+(selectedMood?"Suggestions are tailored toward "+selectedMood.toLowerCase()+".":"Choose a feeling below to personalize suggestions.");
-        return;
+        if(candidates.length){
+          const picked=candidates[Math.floor(Math.random()*candidates.length)];
+          setDisplayedQuote(picked);
+          currentQuote=-1;
+          rotationCount++;
+          status.textContent="Online quote with attribution and source link. "+(selectedMood?"Suggestions are tailored toward "+selectedMood.toLowerCase()+".":"Choose a feeling below to personalize suggestions.");
+          return;
+        }
       }
       const localPool=quotePool();
-      let candidates=localPool.filter(item=>item.index!==currentQuote);
-      if(!candidates.length)candidates=localPool;
+      let candidates=localPool.filter(item=>item.index!==currentQuote && item.text!==quoteEl.textContent);
+      if(!candidates.length)candidates=localPool.filter(item=>item.text!==quoteEl.textContent);
       if(candidates.length){
         const picked=candidates[Math.floor(Math.random()*candidates.length)];
         showQuote(picked.index);
@@ -242,7 +248,9 @@
         status.textContent=selectedMood
           ? "A fresh AirLeo reminder for "+selectedMood.toLowerCase()+". Your check-in stays on this device."
           : "A fresh AirLeo reminder. Choose a feeling below for more personal suggestions.";
+        return;
       }
+      status.textContent="You’ve reached the end of the available quotes for now. Please try again after more quotes load.";
     }
     function resetRotationTimer(){
       if(rotationTimer)clearInterval(rotationTimer);
@@ -278,22 +286,13 @@
     document.querySelectorAll(".mood-btn").forEach(button=>button.addEventListener("click",()=>applyMood(button.dataset.mood)));
     document.getElementById("new-quote").addEventListener("click",async()=>{
       const button=document.getElementById("new-quote");
+      if(button.disabled)return;
       const status=document.getElementById("save-status");
       button.disabled=true;
       try{
         await showRandomQuote();
       }catch(error){
-        // Keep the button useful even if the online quote source fails.
-        const pool=quotePool();
-        const candidates=pool.filter(item=>item.index!==currentQuote);
-        const available=candidates.length?candidates:pool;
-        if(available.length){
-          const picked=available[Math.floor(Math.random()*available.length)];
-          showQuote(picked.index);
-          status.textContent="Showing an AirLeo quote while the online collection is unavailable.";
-        }else{
-          status.textContent="Quotes could not load. Please try again.";
-        }
+        status.textContent="Quotes could not load. Please try again.";
       }finally{
         button.disabled=false;
         resetRotationTimer();
