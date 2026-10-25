@@ -232,12 +232,14 @@
       const item=quoteItems[index];
       setDisplayedQuote({text:item.text,author:"AirLeo",category:item.category,sourceLabel:"AirLeo original collection",sourceUrl:"https://github.com/Opeaa1234/AirLeo",recordUrl:"https://github.com/Opeaa1234/AirLeo",kind:"original"});
     }
+    function quoteKey(text){return String(text||"").toLowerCase().replace(/[“”‘’"]/g,"").replace(/\s+/g," ").trim()}
     async function showRandomQuote(){
       const status=document.getElementById("save-status");
       const pool=onlineQuotes.filter(moodMatches);
       const canUseOnline=pool.length && (Math.random()<0.8 || !quoteItems.some(item=>item.moods.includes(selectedMood)));
       if(canUseOnline){
-        const candidates=pool.filter(item=>item.text!==quoteEl.textContent);
+        const currentKey=quoteKey(quoteEl.textContent);
+        const candidates=pool.filter(item=>quoteKey(item.text)!==currentKey);
         if(candidates.length){
           const picked=candidates[Math.floor(Math.random()*candidates.length)];
           setDisplayedQuote(picked);
@@ -248,8 +250,9 @@
         }
       }
       const localPool=quotePool();
-      let candidates=localPool.filter(item=>item.index!==currentQuote && item.text!==quoteEl.textContent);
-      if(!candidates.length)candidates=localPool.filter(item=>item.text!==quoteEl.textContent);
+      const currentKey=quoteKey(quoteEl.textContent);
+      let candidates=localPool.filter(item=>item.index!==currentQuote && quoteKey(item.text)!==currentKey);
+      if(!candidates.length)candidates=localPool.filter(item=>quoteKey(item.text)!==currentKey);
       if(candidates.length){
         const picked=candidates[Math.floor(Math.random()*candidates.length)];
         showQuote(picked.index);
@@ -315,8 +318,8 @@
     document.getElementById("quote-day").textContent="A thought for today · "+new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
     renderSaved();
     restoreMood();
-    loadOnlineQuotes().then(()=>showRandomQuote());
     showRandomQuote();
+    loadOnlineQuotes().then(()=>showRandomQuote());
     resetRotationTimer();
   </script>
 </body>
