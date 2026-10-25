@@ -262,7 +262,29 @@
     }
     function restoreMood(){try{const saved=JSON.parse(localStorage.getItem("airleo-daily-checkin")||"{}");const today=new Date().toLocaleDateString("en-CA");if(saved.date===today&&saved.mood){selectedMood=saved.mood;document.getElementById("mood-response").textContent="Today you checked in as "+saved.mood+". "+moodMessages[saved.mood]+" Quote suggestions will match this feeling.";document.querySelectorAll(".mood-btn").forEach(b=>{const selected=b.dataset.mood===saved.mood;b.setAttribute("aria-pressed",String(selected));if(selected)b.textContent="✓ "+b.textContent.replace(/^✓ /,"")})}}catch(e){}}
     document.querySelectorAll(".mood-btn").forEach(button=>button.addEventListener("click",()=>applyMood(button.dataset.mood)));
-    document.getElementById("new-quote").addEventListener("click",()=>{showRandomQuote();resetRotationTimer()});
+    document.getElementById("new-quote").addEventListener("click",async()=>{
+      const button=document.getElementById("new-quote");
+      const status=document.getElementById("save-status");
+      button.disabled=true;
+      try{
+        await showRandomQuote();
+      }catch(error){
+        // Keep the button useful even if the online quote source fails.
+        const pool=quotePool();
+        const candidates=pool.filter(item=>item.index!==currentQuote);
+        const available=candidates.length?candidates:pool;
+        if(available.length){
+          const picked=available[Math.floor(Math.random()*available.length)];
+          showQuote(picked.index);
+          status.textContent="Showing an AirLeo quote while the online collection is unavailable.";
+        }else{
+          status.textContent="Quotes could not load. Please try again.";
+        }
+      }finally{
+        button.disabled=false;
+        resetRotationTimer();
+      }
+    });
     document.getElementById("challenge").addEventListener("click",()=>{const current=document.getElementById("challenge-text").textContent;let next;do{next=challenges[Math.floor(Math.random()*challenges.length)]}while(next===current);document.getElementById("challenge-text").textContent=next;document.getElementById("challenge-note").textContent="You’ve got this. Small is still meaningful."});
     document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]");const item={text:quoteEl.textContent,category:categoryEl.textContent,author:currentQuoteRecord?.author||"",sourceUrl:currentQuoteRecord?.sourceUrl||""};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
     document.getElementById("share-quote").addEventListener("click",async()=>{const text="“"+quoteEl.textContent+"” — "+(currentQuoteRecord?.author||document.getElementById("quote-day").textContent.split(" · ")[0]||"AirLeo")+(currentQuoteRecord?.sourceUrl?"\nSource: "+currentQuoteRecord.sourceUrl:"");try{if(navigator.share){await navigator.share({title:"A little lift from AirLeo",text,url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(text+" "+location.href);document.getElementById("save-status").textContent="Quote copied. Share it with someone who might need it."}else{document.getElementById("save-status").textContent=text}}catch(e){if(e.name!=="AbortError")document.getElementById("save-status").textContent="You can copy this quote: "+text}});
