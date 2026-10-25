@@ -162,27 +162,73 @@
       const mood=getMood();
       return quoteItems.map((item,index)=>({...item,index})).filter(item=>!mood||item.moods.includes(mood));
     }
+    let onlineQuotes = [];
+    let currentQuoteRecord = null;
+    function setDisplayedQuote({text,author,category,sourceLabel,sourceUrl,recordUrl,kind="external"}){
+      currentQuoteRecord={text,author,category,sourceLabel,sourceUrl,recordUrl,kind};
+      quoteEl.textContent=text;
+      categoryEl.textContent=category||"A LITTLE LIFT";
+      document.getElementById("quote-day").textContent=(author||"Source attributed")+" · "+(kind==="original"?"AirLeo original":"Online quote");
+      document.getElementById("save-quote").textContent=getSaved().some(q=>q.text===text)?"♥ Saved":"♡ Save";
+      setQuoteSource(sourceLabel||"Quote source",sourceUrl||recordUrl||"https://github.com/Opeaa1234/AirLeo");
+    }
+    function moodMatches(item){
+      if(!selectedMood)return true;
+      const text=(item.text+" "+(item.category||"")).toLowerCase();
+      const words={
+        Calm:["peace","quiet","calm","rest","still","gentle","patience","slow","content"],
+        Hopeful:["hope","future","begin","new","grow","possibility","tomorrow","light","faith"],
+        Tired:["rest","time","slow","patience","ease","gentle","enough","peace"],
+        Overwhelmed:["small","step","patience","one","enough","time","slow","begin","rest"],
+        Unsure:["path","begin","step","time","wisdom","learn","change","future","journey"]
+      };
+      return (words[selectedMood]||[]).some(word=>text.includes(word)) || (item.moods||[]).includes(selectedMood);
+    }
+    async function loadOnlineQuotes(){
+      try{
+        const response=await fetch("https://positivequotation.com/api/v1/quotes?limit=30",{headers:{Accept:"application/json"},cache:"no-store"});
+        if(!response.ok)throw new Error("Source collection unavailable");
+        const result=await response.json();
+        const records=Array.isArray(result.data)?result.data:[];
+        onlineQuotes=records.map(record=>({
+          text:String(record.quote||"").trim(),
+          author:String(record.attribution||"Traditional / source attribution").trim(),
+          category:"PUBLIC-DOMAIN PROVERB",
+          sourceLabel:record.source?.title ? "Source: "+record.source.title : "PositiveQuotation quote record",
+          sourceUrl:record.source?.url||record.detail_url||"https://positivequotation.com/developers/",
+          recordUrl:record.detail_url||"https://positivequotation.com/developers/",
+          kind:"external"
+        })).filter(item=>item.text&&item.text.length<700&&item.sourceUrl);
+      }catch(error){onlineQuotes=[]}
+    }
     function showQuote(index){
       currentQuote=index;
       const item=quoteItems[index];
-      quoteEl.textContent=item.text;
-      categoryEl.textContent=item.category;
-      document.getElementById("quote-day").textContent="AirLeo original reminder · "+(index+1)+" of "+quoteItems.length;
-      document.getElementById("save-quote").textContent=getSaved().some(q=>q.text===item.text)?"♥ Saved":"♡ Save";
-      setQuoteSource("AirLeo original collection","https://github.com/Opeaa1234/AirLeo");
+      setDisplayedQuote({text:item.text,author:"AirLeo",category:item.category,sourceLabel:"AirLeo original collection",sourceUrl:"https://github.com/Opeaa1234/AirLeo",recordUrl:"https://github.com/Opeaa1234/AirLeo",kind:"original"});
     }
-    function showRandomQuote(){
-      const pool=quotePool();
-      if(!pool.length)return;
-      let candidates=pool.filter(item=>item.index!==currentQuote);
-      if(!candidates.length)candidates=pool;
-      const picked=candidates[Math.floor(Math.random()*candidates.length)];
-      showQuote(picked.index);
-      rotationCount++;
+    async function showRandomQuote(){
       const status=document.getElementById("save-status");
-      status.textContent=selectedMood
-        ? "A fresh suggestion for "+selectedMood.toLowerCase()+". Your check-in stays on this device."
-        : "A fresh AirLeo reminder. Choose a feeling below for more personal suggestions.";
+      const pool=onlineQuotes.filter(moodMatches);
+      if(pool.length && (Math.random()<0.8 || !quoteItems.some(item=>item.moods.includes(selectedMood)))){
+        const candidates=pool.filter(item=>item.text!==quoteEl.textContent);
+        const picked=(candidates.length?candidates:pool)[Math.floor(Math.random()*(candidates.length?candidates:pool).length)];
+        setDisplayedQuote(picked);
+        currentQuote=-1;
+        rotationCount++;
+        status.textContent="Online quote with attribution and source link. "+(selectedMood?"Suggestions are tailored toward "+selectedMood.toLowerCase()+".":"Choose a feeling below to personalize suggestions.");
+        return;
+      }
+      const localPool=quotePool();
+      let candidates=localPool.filter(item=>item.index!==currentQuote);
+      if(!candidates.length)candidates=localPool;
+      if(candidates.length){
+        const picked=candidates[Math.floor(Math.random()*candidates.length)];
+        showQuote(picked.index);
+        rotationCount++;
+        status.textContent=selectedMood
+          ? "A fresh AirLeo reminder for "+selectedMood.toLowerCase()+". Your check-in stays on this device."
+          : "A fresh AirLeo reminder. Choose a feeling below for more personal suggestions.";
+      }
     }
     function resetRotationTimer(){
       if(rotationTimer)clearInterval(rotationTimer);
@@ -218,13 +264,14 @@
     document.querySelectorAll(".mood-btn").forEach(button=>button.addEventListener("click",()=>applyMood(button.dataset.mood)));
     document.getElementById("new-quote").addEventListener("click",()=>{showRandomQuote();resetRotationTimer()});
     document.getElementById("challenge").addEventListener("click",()=>{const current=document.getElementById("challenge-text").textContent;let next;do{next=challenges[Math.floor(Math.random()*challenges.length)]}while(next===current);document.getElementById("challenge-text").textContent=next;document.getElementById("challenge-note").textContent="You’ve got this. Small is still meaningful."});
-    document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]");const item={text:quoteEl.textContent,category:categoryEl.textContent};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
-    document.getElementById("share-quote").addEventListener("click",async()=>{const text="“"+quoteEl.textContent+"” — "+(document.getElementById("quote-day").textContent.split(" · ")[0]||"AirLeo");try{if(navigator.share){await navigator.share({title:"A little lift from AirLeo",text,url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(text+" "+location.href);document.getElementById("save-status").textContent="Quote copied. Share it with someone who might need it."}else{document.getElementById("save-status").textContent=text}}catch(e){if(e.name!=="AbortError")document.getElementById("save-status").textContent="You can copy this quote: "+text}});
+    document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]");const item={text:quoteEl.textContent,category:categoryEl.textContent,author:currentQuoteRecord?.author||"",sourceUrl:currentQuoteRecord?.sourceUrl||""};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
+    document.getElementById("share-quote").addEventListener("click",async()=>{const text="“"+quoteEl.textContent+"” — "+(currentQuoteRecord?.author||document.getElementById("quote-day").textContent.split(" · ")[0]||"AirLeo")+(currentQuoteRecord?.sourceUrl?"\nSource: "+currentQuoteRecord.sourceUrl:"");try{if(navigator.share){await navigator.share({title:"A little lift from AirLeo",text,url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(text+" "+location.href);document.getElementById("save-status").textContent="Quote copied. Share it with someone who might need it."}else{document.getElementById("save-status").textContent=text}}catch(e){if(e.name!=="AbortError")document.getElementById("save-status").textContent="You can copy this quote: "+text}});
     document.getElementById("theme-toggle").addEventListener("click",()=>{const night=document.body.classList.toggle("night");document.getElementById("theme-toggle").textContent=night?"☀":"☾";document.getElementById("theme-toggle").setAttribute("aria-label",night?"Switch to cream theme":"Switch to dark theme");document.querySelector('meta[name="theme-color"]').setAttribute("content",night?"#25291f":"#f8f2e5");try{localStorage.setItem("airleo-theme",night?"night":"cream")}catch(e){}});
     try{if(localStorage.getItem("airleo-theme")==="night"){document.body.classList.add("night");document.getElementById("theme-toggle").textContent="☀";document.getElementById("theme-toggle").setAttribute("aria-label","Switch to cream theme");document.querySelector('meta[name="theme-color"]').setAttribute("content","#25291f")}}catch(e){}
     document.getElementById("quote-day").textContent="A thought for today · "+new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
     renderSaved();
     restoreMood();
+    loadOnlineQuotes().then(()=>showRandomQuote());
     showRandomQuote();
     resetRotationTimer();
   </script>
