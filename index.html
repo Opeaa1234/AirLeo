@@ -115,17 +115,24 @@
   </main>
   <footer><div class="wrap footer-row"><div><strong>AIRLEO</strong> · LEO THE PROGRAMMER<br>A little lift for everyday life.</div><div>Made with care. Take it one step at a time. ✳</div></div></footer>
   <script>
+    // These are original AirLeo reminders, grouped by the visitor's optional mood check-in.
     const quoteItems = [
-      {text:"You do not need to have it all figured out. Just take the next honest step.",category:"GENTLE REMINDER"},
-      {text:"Your pace is allowed to be different. Keep moving with purpose.",category:"YOUR OWN PACE"},
-      {text:"A difficult day is one chapter, not your whole story.",category:"FOR HARD DAYS"},
-      {text:"Consistency turns small efforts into meaningful change.",category:"KEEP GOING"},
-      {text:"Be patient with the person you are becoming.",category:"GROWTH"},
-      {text:"Rest when you need to, then begin again.",category:"REST IS ALLOWED"},
-      {text:"Your future is shaped by the small choices you make today.",category:"SMALL STEPS"},
-      {text:"You deserve friendships where care flows both ways.",category:"FRIENDSHIP"},
-      {text:"Healing is not a race. Give yourself room to feel and grow.",category:"HEALING"},
-      {text:"You can begin again without explaining every detail of yesterday.",category:"FRESH START"}
+      {text:"You do not need to have it all figured out. Just take the next honest step.",category:"GENTLE REMINDER",moods:["Unsure","Overwhelmed"]},
+      {text:"Your pace is allowed to be different. Keep moving with purpose.",category:"YOUR OWN PACE",moods:["Calm","Unsure"]},
+      {text:"A difficult day is one chapter, not your whole story.",category:"FOR HARD DAYS",moods:["Tired","Overwhelmed"]},
+      {text:"Consistency turns small efforts into meaningful change.",category:"KEEP GOING",moods:["Hopeful","Unsure"]},
+      {text:"Be patient with the person you are becoming.",category:"GROWTH",moods:["Hopeful","Calm"]},
+      {text:"Rest when you need to, then begin again.",category:"REST IS ALLOWED",moods:["Tired","Overwhelmed"]},
+      {text:"Your future is shaped by the small choices you make today.",category:"SMALL STEPS",moods:["Hopeful","Unsure"]},
+      {text:"You deserve friendships where care flows both ways.",category:"FRIENDSHIP",moods:["Calm","Hopeful"]},
+      {text:"Healing is not a race. Give yourself room to feel and grow.",category:"HEALING",moods:["Tired","Overwhelmed","Unsure"]},
+      {text:"You can begin again without explaining every detail of yesterday.",category:"FRESH START",moods:["Hopeful","Unsure"]},
+      {text:"You are allowed to enjoy a quiet moment without earning it first.",category:"A MOMENT OF CALM",moods:["Calm","Tired"]},
+      {text:"Let hope be a small light, not another task on your list.",category:"GENTLE HOPE",moods:["Hopeful","Overwhelmed"]},
+      {text:"Doing one thing gently is still doing something.",category:"ONE THING AT A TIME",moods:["Overwhelmed","Tired"]},
+      {text:"You can pause before you decide. You do not need every answer now.",category:"TAKE YOUR TIME",moods:["Unsure","Overwhelmed"]},
+      {text:"Notice how far you have come, even if the next step is still small.",category:"QUIET PROGRESS",moods:["Hopeful","Calm"]},
+      {text:"You do not have to turn every feeling into a solution today.",category:"ROOM TO FEEL",moods:["Tired","Overwhelmed"]}
     ];
     const challenges = [
       "Send one kind message to someone who crossed your mind.",
@@ -147,32 +154,41 @@
     function getSaved(){try{return JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]").filter(q=>q&&typeof q.text==="string")}catch(e){return []}}
     function renderSaved(){const host=document.getElementById("saved-quotes-list");const saved=getSaved();host.replaceChildren();if(!saved.length){const empty=document.createElement("p");empty.className="small";empty.textContent="No saved quotes yet. Tap ♡ Save on a quote to keep it here.";host.append(empty);return}saved.forEach((item,index)=>{const card=document.createElement("article");card.className="saved-item";const copy=document.createElement("div");const quote=document.createElement("p");quote.textContent="“"+item.text+"”";const category=document.createElement("small");category.textContent=item.category||"AirLeo quote";copy.append(quote,category);const remove=document.createElement("button");remove.type="button";remove.className="icon-btn";remove.textContent="Remove";remove.setAttribute("aria-label","Remove saved quote "+(index+1));remove.addEventListener("click",()=>{try{localStorage.setItem("airleo-saved-quotes",JSON.stringify(getSaved().filter(q=>q.text!==item.text)));renderSaved();document.getElementById("save-status").textContent="Quote removed from your saved list."}catch(e){document.getElementById("save-status").textContent="Could not update saved quotes in this browser."}});card.append(copy,remove);host.append(card)})}
     document.getElementById("export-saved").addEventListener("click",async()=>{const saved=getSaved();if(!saved.length){document.getElementById("save-status").textContent="Save a quote first, then you can copy your list.";return}const text=saved.map((q,i)=>(i+1)+". “"+q.text+"”"+(q.category?" — "+q.category:"")).join("\n\n");try{await navigator.clipboard.writeText(text);document.getElementById("save-status").textContent="Your saved quotes were copied. Paste them into Notes or a message to keep a backup."}catch(e){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();const copied=document.execCommand("copy");area.remove();document.getElementById("save-status").textContent=copied?"Your saved quotes were copied. Paste them into Notes or a message to keep a backup.":"Copy is unavailable here. You can copy quotes individually from the list."}});
-    function showQuote(index){currentQuote=index;quoteEl.textContent=quoteItems[index].text;categoryEl.textContent=quoteItems[index].category;document.getElementById("quote-day").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"})+" · "+(index+1)+" of "+quoteItems.length;document.getElementById("save-quote").textContent=getSaved().some(q=>q.text===quoteItems[index].text)?"♥ Saved":"♡ Save";document.getElementById("save-status").textContent="";setQuoteSource("AirLeo collection","https://github.com/Opeaa1234/AirLeo");}
-    async function showRandomQuote(){
-      const button=document.getElementById("new-quote");
-      const originalLabel=button.textContent;
-      button.disabled=true;button.textContent="Finding a quote…";
-      document.getElementById("save-status").textContent="Looking for a fresh quote. Your saved quotes will stay on this device.";
-      try{
-        const response=await fetch("https://api.dumbapis.com/quote",{headers:{Accept:"application/json"},cache:"no-store"});
-        if(!response.ok)throw new Error("Quote feed unavailable");
-        const data=await response.json();
-        const text=String(data.quote||data.text||"").trim();
-        const author=String(data.author||"Unknown author").trim();
-        if(!text||text.length>600)throw new Error("Quote feed returned no usable quote");
-        quoteEl.textContent=text;categoryEl.textContent="FROM THE QUOTE LIBRARY";
-        document.getElementById("quote-day").textContent=author+" · External quote";
-        currentQuote=-1;
-        document.getElementById("save-quote").textContent=getSaved().some(q=>q.text===text)?"♥ Saved":"♡ Save";
-        setQuoteSource("Dumb API public-domain quote feed","https://dumbapis.com/docs/quote/");
-        document.getElementById("save-status").textContent="A quote from an external public-domain literature feed. Check the linked source for details.";
-      }catch(error){
-        let next=currentQuote;
-        if(quoteItems.length>1)while(next===currentQuote)next=Math.floor(Math.random()*quoteItems.length);
-        showQuote(next);
-        document.getElementById("save-status").textContent="The online quote feed is unavailable right now, so we showed a quote from AirLeo’s local collection instead.";
-      }finally{button.disabled=false;button.textContent=originalLabel;}
+    let selectedMood = "";
+    let rotationTimer = null;
+    let rotationCount = 0;
+    function getMood(){return selectedMood||""}
+    function quotePool(){
+      const mood=getMood();
+      return quoteItems.map((item,index)=>({...item,index})).filter(item=>!mood||item.moods.includes(mood));
     }
+    function showQuote(index){
+      currentQuote=index;
+      const item=quoteItems[index];
+      quoteEl.textContent=item.text;
+      categoryEl.textContent=item.category;
+      document.getElementById("quote-day").textContent="AirLeo original reminder · "+(index+1)+" of "+quoteItems.length;
+      document.getElementById("save-quote").textContent=getSaved().some(q=>q.text===item.text)?"♥ Saved":"♡ Save";
+      setQuoteSource("AirLeo original collection","https://github.com/Opeaa1234/AirLeo");
+    }
+    function showRandomQuote(){
+      const pool=quotePool();
+      if(!pool.length)return;
+      let candidates=pool.filter(item=>item.index!==currentQuote);
+      if(!candidates.length)candidates=pool;
+      const picked=candidates[Math.floor(Math.random()*candidates.length)];
+      showQuote(picked.index);
+      rotationCount++;
+      const status=document.getElementById("save-status");
+      status.textContent=selectedMood
+        ? "A fresh suggestion for "+selectedMood.toLowerCase()+". Your check-in stays on this device."
+        : "A fresh AirLeo reminder. Choose a feeling below for more personal suggestions.";
+    }
+    function resetRotationTimer(){
+      if(rotationTimer)clearInterval(rotationTimer);
+      rotationTimer=setInterval(()=>{if(!document.hidden)showRandomQuote()},120000);
+    }
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden)resetRotationTimer()});
     document.getElementById("community-quote-form").addEventListener("submit",event=>{
       event.preventDefault();
       const quote=document.getElementById("community-quote").value.trim();
@@ -185,9 +201,22 @@
     });
     document.getElementById("quote-request-form").addEventListener("submit",event=>{event.preventDefault();const topic=document.getElementById("request-topic").value;const details=document.getElementById("request-details").value.trim();if(!topic)return;const message="Hello Leo, I would like an AirLeo quote about: "+topic+"."+(details?"\\nA little context: "+details:"");document.getElementById("request-status").textContent="Opening WhatsApp with your draft…";window.open("https://wa.me/2349118309320?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");});
     const moodMessages={Calm:"Let yourself enjoy the quiet. You do not need to rush a peaceful moment.",Hopeful:"Protect that little spark. One small step is enough for today.",Tired:"Rest is part of moving forward. Choose one thing you can make lighter.",Overwhelmed:"You do not have to solve everything at once. What is the next smallest step?",Unsure:"You can take your time. Clarity often comes after you begin gently."};
-    function restoreMood(){try{const saved=JSON.parse(localStorage.getItem("airleo-daily-checkin")||"{}");const today=new Date().toLocaleDateString("en-CA");if(saved.date===today&&saved.mood){document.getElementById("mood-response").textContent="Today you checked in as "+saved.mood+". "+moodMessages[saved.mood];document.querySelectorAll(".mood-btn").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.mood===saved.mood));if(b.dataset.mood===saved.mood)b.textContent="✓ "+b.textContent.replace(/^✓ /,"")})}}catch(e){}}
-    document.querySelectorAll(".mood-btn").forEach(button=>button.addEventListener("click",()=>{const mood=button.dataset.mood;try{localStorage.setItem("airleo-daily-checkin",JSON.stringify({date:new Date().toLocaleDateString("en-CA"),mood}));document.querySelectorAll(".mood-btn").forEach(b=>{b.setAttribute("aria-pressed",String(b===button));b.textContent=b.textContent.replace(/^✓ /,"");if(b===button)b.textContent="✓ "+b.textContent});document.getElementById("mood-response").textContent="Today you checked in as "+mood+". "+moodMessages[mood]}catch(e){document.getElementById("mood-response").textContent=moodMessages[mood]+" (This browser could not save your check-in.)"}}));
-    document.getElementById("new-quote").addEventListener("click",showRandomQuote);
+    function applyMood(mood,{persist=true}={}){
+      selectedMood=mood;
+      document.querySelectorAll(".mood-btn").forEach(b=>{
+        const selected=b.dataset.mood===mood;
+        b.setAttribute("aria-pressed",String(selected));
+        b.textContent=b.textContent.replace(/^✓ /,"");
+        if(selected)b.textContent="✓ "+b.textContent;
+      });
+      if(persist){try{localStorage.setItem("airleo-daily-checkin",JSON.stringify({date:new Date().toLocaleDateString("en-CA"),mood}))}catch(e){}}
+      document.getElementById("mood-response").textContent="Today you checked in as "+mood+". "+moodMessages[mood]+" Quote suggestions will now match this feeling.";
+      showRandomQuote();
+      resetRotationTimer();
+    }
+    function restoreMood(){try{const saved=JSON.parse(localStorage.getItem("airleo-daily-checkin")||"{}");const today=new Date().toLocaleDateString("en-CA");if(saved.date===today&&saved.mood){selectedMood=saved.mood;document.getElementById("mood-response").textContent="Today you checked in as "+saved.mood+". "+moodMessages[saved.mood]+" Quote suggestions will match this feeling.";document.querySelectorAll(".mood-btn").forEach(b=>{const selected=b.dataset.mood===saved.mood;b.setAttribute("aria-pressed",String(selected));if(selected)b.textContent="✓ "+b.textContent.replace(/^✓ /,"")})}}catch(e){}}
+    document.querySelectorAll(".mood-btn").forEach(button=>button.addEventListener("click",()=>applyMood(button.dataset.mood)));
+    document.getElementById("new-quote").addEventListener("click",()=>{showRandomQuote();resetRotationTimer()});
     document.getElementById("challenge").addEventListener("click",()=>{const current=document.getElementById("challenge-text").textContent;let next;do{next=challenges[Math.floor(Math.random()*challenges.length)]}while(next===current);document.getElementById("challenge-text").textContent=next;document.getElementById("challenge-note").textContent="You’ve got this. Small is still meaningful."});
     document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]");const item={text:quoteEl.textContent,category:categoryEl.textContent};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
     document.getElementById("share-quote").addEventListener("click",async()=>{const text="“"+quoteEl.textContent+"” — "+(document.getElementById("quote-day").textContent.split(" · ")[0]||"AirLeo");try{if(navigator.share){await navigator.share({title:"A little lift from AirLeo",text,url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(text+" "+location.href);document.getElementById("save-status").textContent="Quote copied. Share it with someone who might need it."}else{document.getElementById("save-status").textContent=text}}catch(e){if(e.name!=="AbortError")document.getElementById("save-status").textContent="You can copy this quote: "+text}});
@@ -196,6 +225,8 @@
     document.getElementById("quote-day").textContent="A thought for today · "+new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
     renderSaved();
     restoreMood();
+    showRandomQuote();
+    resetRotationTimer();
   </script>
 </body>
 </html>
