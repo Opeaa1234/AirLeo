@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="AirLeo by Leo the Programmer — daily motivation, quotes, challenges and useful links.">
+  <title>AirLeo | LEO THE PROGRAMMER</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#121d31;--text:#f4f7fb;--muted:#b4c0d3;--accent:#8be9fd;--line:#263650}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at top,#182a45 0,var(--bg) 55%);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:inherit} .wrap{width:min(920px,100% - 32px);margin:auto}header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line)}
+    .brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--accent)}nav{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem}nav a{text-decoration:none;color:var(--muted)}
+    .hero{padding:58px 0 30px;text-align:center}.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
+    h1{font-size:clamp(2.2rem,8vw,4.6rem);line-height:1.05;letter-spacing:-.04em;margin:12px 0}h1 span{color:var(--accent)}.lead{color:var(--muted);max-width:600px;margin:18px auto 26px}
+    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border-radius:12px;border:1px solid var(--line);text-decoration:none;font-weight:750;min-height:44px}.primary{background:var(--accent);color:#07111d;border-color:var(--accent)}.section{padding:24px 0}.section h2{font-size:1.45rem;margin:0 0 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+    .card{background:linear-gradient(145deg,rgba(18,29,49,.96),rgba(13,22,38,.96));border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.card p{color:var(--muted);margin:8px 0 14px}.quote{font-size:clamp(1.25rem,4vw,1.8rem);font-weight:750;line-height:1.35}.small{font-size:.9rem;color:var(--muted)}button{font:inherit;cursor:pointer}footer{border-top:1px solid var(--line);padding:24px 0 36px;margin-top:30px;color:var(--muted);font-size:.88rem}
+    a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <a class="brand" href="#home" aria-label="AirLeo home" style="text-decoration:none">AIR<span>LEO</span></a>
+    <nav aria-label="Main navigation"><a href="#daily">Daily quote</a><a href="#links">Links</a><a href="#community">Community</a></nav>
+  </header>
+  <main id="home" class="wrap">
+    <section class="hero">
+      <div class="eyebrow">LEO THE PROGRAMMER</div>
+      <h1>Small steps.<br><span>Big energy.</span></h1>
+      <p class="lead">A simple place for daily motivation, thoughtful quotes, mini challenges and ways to connect with the community.</p>
+      <div class="actions"><a class="btn primary" href="#daily">Get today’s motivation</a><a class="btn" href="https://whatsapp.com/channel/0029VbDUfyT1dAw05z5f4U34" target="_blank" rel="noopener noreferrer">Join WhatsApp channel</a></div>
+    </section>
+    <section id="daily" class="section">
+      <h2>Daily motivation</h2>
+      <article class="card">
+        <div class="eyebrow">A thought for today</div>
+        <p class="quote" id="quote">You do not need to have it all figured out. Just take the next honest step.</p>
+        <p class="small" id="quote-count">A little progress still counts.</p>
+        <button class="btn" id="new-quote" type="button">Show another quote</button>
+      </article>
+    </section>
+    <section class="section" id="links">
+      <h2>Explore AirLeo</h2>
+      <div class="grid">
+        <article class="card"><h3>Daily quotes</h3><p>Short reminders for focus, confidence, friendship and fresh starts.</p><a href="#daily">Read a quote →</a></article>
+        <article class="card"><h3>Give It A Go</h3><p>Choose one small challenge and do it today. Progress beats perfection.</p><button class="btn" id="challenge" type="button">Get a challenge</button><p class="small" id="challenge-text" aria-live="polite">Your next step can be simple.</p></article>
+        <article class="card"><h3>My projects</h3><p>Visit the projects and experiments built by Leo the Programmer.</p><a href="https://github.com/Opeaa1234" target="_blank" rel="noopener noreferrer">Explore GitHub →</a></article>
+      </div>
+    </section>
+    <section class="section" id="community">
+      <h2>Stay connected</h2>
+      <div class="card">
+        <h3>Join the AirLeo community</h3>
+        <p>Follow updates and share the motivation with someone who might need it.</p>
+        <div class="actions" style="justify-content:flex-start"><a class="btn primary" href="https://whatsapp.com/channel/0029VbDUfyT1dAw05z5f4U34" target="_blank" rel="noopener noreferrer">Join the channel</a><a class="btn" href="https://wa.me/2349118309320?text=Hello%20Leo%2C%20I%27m%20visiting%20AirLeo." target="_blank" rel="noopener noreferrer">Talk to Leo</a></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap"><strong>AirLeo</strong> · LEO THE PROGRAMMER<br><span>Built to be lightweight and comfortable on mobile. Sign-in and payments will be added only after their secure configuration is ready.</span></div></footer>
+  <script>
+    const quotes = [
+      "You do not need to have it all figured out. Just take the next honest step.",
+      "Your pace is allowed to be different. Keep moving with purpose.",
+      "A difficult day is one chapter, not your whole story.",
+      "Consistency turns small efforts into meaningful change.",
+      "Be patient with the person you are becoming.",
+      "Rest when you need to, then begin again.",
+      "Your future is shaped by the small choices you make today."
+    ];
+    const challenges = [
+      "Send one encouraging message to someone.",
+      "Spend ten focused minutes learning something new.",
+      "Write down one thing you are grateful for today.",
+      "Tidy one small area around you.",
+      "Take a short break from scrolling and stretch.",
+      "Finish one task you have been putting off.",
+      "Write one goal and the smallest step toward it."
+    ];
+    document.getElementById("new-quote").addEventListener("click", () => {
+      const current = document.getElementById("quote").textContent;
+      const choices = quotes.filter(q => q !== current);
+      document.getElementById("quote").textContent = choices[Math.floor(Math.random() * choices.length)];
+      document.getElementById("quote-count").textContent = "Keep what helps; share it with kindness.";
+    });
+    document.getElementById("challenge").addEventListener("click", () => {
+      document.getElementById("challenge-text").textContent = challenges[Math.floor(Math.random() * challenges.length)];
+    });
+  </script>
+</body>
+</html>
