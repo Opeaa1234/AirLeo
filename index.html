@@ -217,8 +217,10 @@
       return (words[selectedMood]||[]).some(word=>text.includes(word)) || (item.moods||[]).includes(selectedMood);
     }
     async function loadOnlineQuotes(){
+      const controller=new AbortController();
+      const timeoutId=setTimeout(()=>controller.abort(),8000);
       try{
-        const response=await fetch("https://positivequotation.com/api/v1/quotes?limit=30",{headers:{Accept:"application/json"},cache:"no-store"});
+        const response=await fetch("https://positivequotation.com/api/v1/quotes?limit=30",{headers:{Accept:"application/json"},cache:"no-store",signal:controller.signal});
         if(!response.ok)throw new Error("Source collection unavailable");
         const result=await response.json();
         const records=Array.isArray(result.data)?result.data:[];
@@ -232,6 +234,7 @@
           kind:"external"
         })).filter(item=>item.text&&item.text.length<700&&item.sourceUrl);
       }catch(error){onlineQuotes=[]}
+      finally{clearTimeout(timeoutId)}
     }
     function showQuote(index){
       currentQuote=index;
