@@ -275,6 +275,18 @@
       rotationTimer=setInterval(()=>{if(!document.hidden)showRandomQuote()},120000);
     }
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)resetRotationTimer()});
+    function openWhatsAppDraft(message,statusId){
+      const url="https://wa.me/2349118309320?text="+encodeURIComponent(message);
+      const status=document.getElementById(statusId);
+      status.textContent="WhatsApp should open with your draft. If it does not, ";
+      const link=document.createElement("a");
+      link.href=url;
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      link.textContent="tap here to open WhatsApp";
+      status.append(link);
+      window.open(url,"_blank","noopener,noreferrer");
+    }
     document.getElementById("community-quote-form").addEventListener("submit",event=>{
       event.preventDefault();
       const quote=document.getElementById("community-quote").value.trim();
@@ -282,10 +294,9 @@
       const link=document.getElementById("community-link").value.trim();
       if(!quote||!author||!document.getElementById("community-permission").checked)return;
       const message="Hello Leo, I would like to submit a quote for AirLeo review.\n\nQuote/message: "+quote+"\nName/brand: "+author+"\nWebsite/social: "+(link||"Not provided")+"\n\nI confirm I have the right to submit this text and give AirLeo permission to display it with attribution if approved. I understand promotional content may be labelled as advertising.";
-      document.getElementById("community-quote-status").textContent="Opening WhatsApp so you can review and send your submission. It will not be published automatically.";
-      window.open("https://wa.me/2349118309320?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");
+      openWhatsAppDraft(message,"community-quote-status");
     });
-    document.getElementById("quote-request-form").addEventListener("submit",event=>{event.preventDefault();const topic=document.getElementById("request-topic").value;const details=document.getElementById("request-details").value.trim();if(!topic)return;const message="Hello Leo, I would like an AirLeo quote about: "+topic+"."+(details?"\nA little context: "+details:"");document.getElementById("request-status").textContent="Opening WhatsApp with your draft…";window.open("https://wa.me/2349118309320?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");});
+    document.getElementById("quote-request-form").addEventListener("submit",event=>{event.preventDefault();const topic=document.getElementById("request-topic").value;const details=document.getElementById("request-details").value.trim();if(!topic)return;const message="Hello Leo, I would like an AirLeo quote about: "+topic+"."+(details?"\nA little context: "+details:"");openWhatsAppDraft(message,"request-status");});
     const moodMessages={Calm:"Let yourself enjoy the quiet. You do not need to rush a peaceful moment.",Hopeful:"Protect that little spark. One small step is enough for today.",Tired:"Rest is part of moving forward. Choose one thing you can make lighter.",Overwhelmed:"You do not have to solve everything at once. What is the next smallest step?",Unsure:"You can take your time. Clarity often comes after you begin gently."};
     function applyMood(mood,{persist=true}={}){
       selectedMood=mood;
