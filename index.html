@@ -175,8 +175,58 @@
     const quoteSourceLink=document.getElementById("quote-source-link");
     function setQuoteSource(label,url){activeQuoteSource={label,url};quoteSourceLabel.textContent=label;quoteSourceLink.href=url;quoteSourceLink.textContent="View source";}
     function getSaved(){try{return JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]").filter(q=>q&&typeof q.text==="string")}catch(e){return []}}
-    function renderSaved(){const host=document.getElementById("saved-quotes-list");const saved=getSaved();host.replaceChildren();if(!saved.length){const empty=document.createElement("p");empty.className="small";empty.textContent="No saved quotes yet. Tap ♡ Save on a quote to keep it here.";host.append(empty);return}saved.forEach((item,index)=>{const card=document.createElement("article");card.className="saved-item";const copy=document.createElement("div");const quote=document.createElement("p");quote.textContent="“"+item.text+"”";const category=document.createElement("small");category.textContent=item.category||"AirLeo quote";copy.append(quote,category);const remove=document.createElement("button");remove.type="button";remove.className="icon-btn";remove.textContent="Remove";remove.setAttribute("aria-label","Remove saved quote "+(index+1));remove.addEventListener("click",()=>{try{localStorage.setItem("airleo-saved-quotes",JSON.stringify(getSaved().filter(q=>q.text!==item.text)));renderSaved();document.getElementById("save-status").textContent="Quote removed from your saved list."}catch(e){document.getElementById("save-status").textContent="Could not update saved quotes in this browser."}});card.append(copy,remove);host.append(card)})}
-    document.getElementById("export-saved").addEventListener("click",async()=>{const saved=getSaved();if(!saved.length){document.getElementById("save-status").textContent="Save a quote first, then you can copy your list.";return}const text=saved.map((q,i)=>(i+1)+". “"+q.text+"”"+(q.category?" — "+q.category:"")).join("\n\n");try{await navigator.clipboard.writeText(text);document.getElementById("save-status").textContent="Your saved quotes were copied. Paste them into Notes or a message to keep a backup."}catch(e){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();const copied=document.execCommand("copy");area.remove();document.getElementById("save-status").textContent=copied?"Your saved quotes were copied. Paste them into Notes or a message to keep a backup.":"Copy is unavailable here. You can copy quotes individually from the list."}});
+    function renderSaved(){
+      const host=document.getElementById("saved-quotes-list");
+      const saved=getSaved();
+      host.replaceChildren();
+      if(!saved.length){
+        const empty=document.createElement("p");
+        empty.className="small";
+        empty.textContent="No saved quotes yet. Tap ♡ Save on a quote to keep it here.";
+        host.append(empty);
+        return;
+      }
+      saved.forEach((item,index)=>{
+        const card=document.createElement("article");
+        card.className="saved-item";
+        const copy=document.createElement("div");
+        const quote=document.createElement("p");
+        quote.textContent="“"+item.text+"”";
+        const category=document.createElement("small");
+        category.textContent=item.category||"AirLeo quote";
+        copy.append(quote,category);
+        if(item.author){
+          const attribution=document.createElement("p");
+          attribution.className="small";
+          attribution.textContent="— "+item.author;
+          copy.append(attribution);
+        }
+        if(item.sourceUrl){
+          const source=document.createElement("a");
+          source.href=safeQuoteSourceUrl(item.sourceUrl);
+          source.target="_blank";
+          source.rel="noopener noreferrer";
+          source.textContent="View original source";
+          source.className="small";
+          copy.append(source);
+        }
+        const remove=document.createElement("button");
+        remove.type="button";
+        remove.className="icon-btn";
+        remove.textContent="Remove";
+        remove.setAttribute("aria-label","Remove saved quote "+(index+1));
+        remove.addEventListener("click",()=>{
+          try{
+            localStorage.setItem("airleo-saved-quotes",JSON.stringify(getSaved().filter(q=>q.text!==item.text)));
+            renderSaved();
+            document.getElementById("save-status").textContent="Quote removed from your saved list.";
+          }catch(e){document.getElementById("save-status").textContent="Could not update saved quotes in this browser."}
+        });
+        card.append(copy,remove);
+        host.append(card);
+      });
+    }
+    document.getElementById("export-saved").addEventListener("click",async()=>{const saved=getSaved();if(!saved.length){document.getElementById("save-status").textContent="Save a quote first, then you can copy your list.";return}const text=saved.map((q,i)=>(i+1)+". “"+q.text+"”"+(q.author?" — "+q.author:"")+(q.category?" ["+q.category+"]":"")+(q.sourceUrl?"\nSource: "+safeQuoteSourceUrl(q.sourceUrl):"")).join("\n\n");try{await navigator.clipboard.writeText(text);document.getElementById("save-status").textContent="Your saved quotes were copied. Paste them into Notes or a message to keep a backup."}catch(e){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();const copied=document.execCommand("copy");area.remove();document.getElementById("save-status").textContent=copied?"Your saved quotes were copied. Paste them into Notes or a message to keep a backup.":"Copy is unavailable here. You can copy quotes individually from the list."}});
     let selectedMood = "";
     let rotationTimer = null;
     let rotationCount = 0;
