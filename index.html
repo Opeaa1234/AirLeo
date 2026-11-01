@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f0df">
   <meta name="description" content="AirLeo by Leo the Programmer — daily motivation, thoughtful quotes, and little challenges for real life.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AirLeo — a little lift for your day">
+  <meta property="og:description" content="Daily motivation, thoughtful quotes, and little challenges for real life.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AirLeo — a little lift for your day">
+  <meta name="twitter:description" content="Daily motivation, thoughtful quotes, and little challenges for real life.">
   <title>AirLeo — a little lift for your day</title>
   <style>
     :root{color-scheme:light;--paper:#f8f2e5;--paper-deep:#efe3cb;--ink:#2d332b;--muted:#686b5d;--accent:#c65d3a;--accent-dark:#9f432a;--olive:#727b50;--line:#d9ceb8;--card:#fffaf0;--shadow:0 12px 35px #55462a12}
@@ -36,6 +42,11 @@
     .quote-card[data-scene="2"]{background:linear-gradient(135deg,#fbe9df 0%,#f1d0bd 100%);border-color:#e8c1aa}
     .quote-card[data-scene="3"]{background:linear-gradient(135deg,#e9eef5 0%,#d5dfec 100%);border-color:#c4d0df}
     .quote-card[data-scene="4"]{background:linear-gradient(135deg,#f2eafa 0%,#e2d5ef 100%);border-color:#d4c3e4}
+    body.night .quote-card[data-scene="0"]{background:linear-gradient(135deg,#39372d 0%,#34382b 100%);border-color:#625943}
+    body.night .quote-card[data-scene="1"]{background:linear-gradient(135deg,#303b2d 0%,#354332 100%);border-color:#526348}
+    body.night .quote-card[data-scene="2"]{background:linear-gradient(135deg,#44332c 0%,#49372f 100%);border-color:#71503e}
+    body.night .quote-card[data-scene="3"]{background:linear-gradient(135deg,#303844 0%,#354151 100%);border-color:#526174}
+    body.night .quote-card[data-scene="4"]{background:linear-gradient(135deg,#3d3346 0%,#45384f 100%);border-color:#655276}
     .quote-card[data-scene="1"]:after{color:#657a4a22}
     @media(prefers-reduced-motion:reduce){.quote-card{transition:none}}.quote-card:after{content:"“";position:absolute;right:18px;top:-50px;font:14rem/1 Georgia,serif;color:#d8c5a54d;pointer-events:none}.quote{font:clamp(1.55rem,3.8vw,2.65rem)/1.25 Georgia,"Times New Roman",serif;letter-spacing:-.035em;max-width:660px;position:relative;z-index:1;margin:20px 0}.quote-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.88rem}.quote-tools{display:flex;gap:8px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#f4ead7;color:var(--olive);font-size:.75rem;font-weight:850}
     .side-card{background:var(--olive);color:#fff8e9;display:flex;flex-direction:column;justify-content:space-between;min-height:270px}.side-card .kicker{color:#f6d6a5}.side-card .kicker:before{background:#f6d6a5}.side-card p{color:#f4edda}.side-card .btn{color:#fff8e9;border-color:#ffffff80;background:#ffffff12}.side-card h3{font:2rem/1.1 Georgia,serif;margin:12px 0}
@@ -45,10 +56,10 @@
     footer{padding:26px 0 38px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.footer-row strong{color:var(--ink)}
     body.night{color-scheme:dark;--paper:#25291f;--paper-deep:#303628;--ink:#f4ecd9;--muted:#c1c1ac;--accent:#e58a63;--accent-dark:#c96d49;--olive:#747d55;--line:#4c5140;--card:#303328;--shadow:0 12px 35px #0002;background-image:repeating-linear-gradient(0deg,transparent 0 47px,#ffffff07 48px 49px),radial-gradient(ellipse at 15% 5%,#454938 0,transparent 42%)}body.night .topbar{background:#25291fee}body.night .pill{background:#3b4030}body.night .community{background:#383e2e;border-color:var(--line)}body.night .community p{color:var(--muted)}body.night .ticker{background:var(--paper-deep)}
     .fade-in{animation:appear .65s both}.fade-in:nth-child(2){animation-delay:.08s}.fade-in:nth-child(3){animation-delay:.16s}
-    a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+    a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     @keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}@keyframes marquee{to{transform:translateX(-50%)}}@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    @media(max-width:700px){nav{gap:10px;font-size:.82rem}.hero{grid-template-columns:1fr;padding-top:42px}.hero-art{min-height:260px;grid-row:1}.hero-art .sun{width:220px}.hero-note{left:8%}.sticker{right:8%}.quote-layout{grid-template-columns:1fr}.side-card{min-height:210px}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.challenge-box,.community{grid-template-columns:1fr}.challenge-box .btn{justify-self:start}}
-    @media(max-width:420px){.wrap{width:calc(100% - 24px)}header{min-height:64px}.brand{font-size:.92rem}.brand-mark{width:30px;height:30px}nav{gap:8px}nav a:first-child{display:none}.icon-btn{padding:7px 9px}.hero-art{min-height:230px}}
+    @media(max-width:700px){header{align-items:flex-start;padding-block:12px}nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 12px;font-size:.82rem}.hero{grid-template-columns:1fr;padding-top:42px}.hero-art{min-height:260px;grid-row:1}.hero-art .sun{width:220px}.hero-note{left:8%}.sticker{right:8%}.quote-layout{grid-template-columns:1fr}.side-card{min-height:210px}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.challenge-box,.community{grid-template-columns:1fr}.challenge-box .btn{justify-self:start}}
+    @media(max-width:420px){.wrap{width:calc(100% - 24px)}header{min-height:64px;flex-wrap:wrap;align-items:center}.brand{font-size:.92rem}.brand-mark{width:30px;height:30px}nav{width:100%;justify-content:flex-start;gap:8px 12px}nav a:first-child{display:inline}.icon-btn{padding:7px 9px}.hero-art{min-height:230px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
@@ -169,8 +180,58 @@
     const quoteSourceLink=document.getElementById("quote-source-link");
     function setQuoteSource(label,url){activeQuoteSource={label,url};quoteSourceLabel.textContent=label;quoteSourceLink.href=url;quoteSourceLink.textContent="View source";}
     function getSaved(){try{return JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]").filter(q=>q&&typeof q.text==="string")}catch(e){return []}}
-    function renderSaved(){const host=document.getElementById("saved-quotes-list");const saved=getSaved();host.replaceChildren();if(!saved.length){const empty=document.createElement("p");empty.className="small";empty.textContent="No saved quotes yet. Tap ♡ Save on a quote to keep it here.";host.append(empty);return}saved.forEach((item,index)=>{const card=document.createElement("article");card.className="saved-item";const copy=document.createElement("div");const quote=document.createElement("p");quote.textContent="“"+item.text+"”";const category=document.createElement("small");category.textContent=item.category||"AirLeo quote";copy.append(quote,category);const remove=document.createElement("button");remove.type="button";remove.className="icon-btn";remove.textContent="Remove";remove.setAttribute("aria-label","Remove saved quote "+(index+1));remove.addEventListener("click",()=>{try{localStorage.setItem("airleo-saved-quotes",JSON.stringify(getSaved().filter(q=>q.text!==item.text)));renderSaved();document.getElementById("save-status").textContent="Quote removed from your saved list."}catch(e){document.getElementById("save-status").textContent="Could not update saved quotes in this browser."}});card.append(copy,remove);host.append(card)})}
-    document.getElementById("export-saved").addEventListener("click",async()=>{const saved=getSaved();if(!saved.length){document.getElementById("save-status").textContent="Save a quote first, then you can copy your list.";return}const text=saved.map((q,i)=>(i+1)+". “"+q.text+"”"+(q.category?" — "+q.category:"")).join("\n\n");try{await navigator.clipboard.writeText(text);document.getElementById("save-status").textContent="Your saved quotes were copied. Paste them into Notes or a message to keep a backup."}catch(e){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();const copied=document.execCommand("copy");area.remove();document.getElementById("save-status").textContent=copied?"Your saved quotes were copied. Paste them into Notes or a message to keep a backup.":"Copy is unavailable here. You can copy quotes individually from the list."}});
+    function renderSaved(){
+      const host=document.getElementById("saved-quotes-list");
+      const saved=getSaved();
+      host.replaceChildren();
+      if(!saved.length){
+        const empty=document.createElement("p");
+        empty.className="small";
+        empty.textContent="No saved quotes yet. Tap ♡ Save on a quote to keep it here.";
+        host.append(empty);
+        return;
+      }
+      saved.forEach((item,index)=>{
+        const card=document.createElement("article");
+        card.className="saved-item";
+        const copy=document.createElement("div");
+        const quote=document.createElement("p");
+        quote.textContent="“"+item.text+"”";
+        const category=document.createElement("small");
+        category.textContent=item.category||"AirLeo quote";
+        copy.append(quote,category);
+        if(item.author){
+          const attribution=document.createElement("p");
+          attribution.className="small";
+          attribution.textContent="— "+item.author;
+          copy.append(attribution);
+        }
+        if(item.sourceUrl){
+          const source=document.createElement("a");
+          source.href=safeQuoteSourceUrl(item.sourceUrl);
+          source.target="_blank";
+          source.rel="noopener noreferrer";
+          source.textContent="View original source";
+          source.className="small";
+          copy.append(source);
+        }
+        const remove=document.createElement("button");
+        remove.type="button";
+        remove.className="icon-btn";
+        remove.textContent="Remove";
+        remove.setAttribute("aria-label","Remove saved quote "+(index+1));
+        remove.addEventListener("click",()=>{
+          try{
+            localStorage.setItem("airleo-saved-quotes",JSON.stringify(getSaved().filter(q=>q.text!==item.text)));
+            renderSaved();
+            document.getElementById("save-status").textContent="Quote removed from your saved list.";
+          }catch(e){document.getElementById("save-status").textContent="Could not update saved quotes in this browser."}
+        });
+        card.append(copy,remove);
+        host.append(card);
+      });
+    }
+    document.getElementById("export-saved").addEventListener("click",async()=>{const saved=getSaved();if(!saved.length){document.getElementById("save-status").textContent="Save a quote first, then you can copy your list.";return}const text=saved.map((q,i)=>(i+1)+". “"+q.text+"”"+(q.author?" — "+q.author:"")+(q.category?" ["+q.category+"]":"")+(q.sourceUrl?"\nSource: "+safeQuoteSourceUrl(q.sourceUrl):"")).join("\n\n");try{await navigator.clipboard.writeText(text);document.getElementById("save-status").textContent="Your saved quotes were copied. Paste them into Notes or a message to keep a backup."}catch(e){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.append(area);area.select();const copied=document.execCommand("copy");area.remove();document.getElementById("save-status").textContent=copied?"Your saved quotes were copied. Paste them into Notes or a message to keep a backup.":"Copy is unavailable here. You can copy quotes individually from the list."}});
     let selectedMood = "";
     let rotationTimer = null;
     let rotationCount = 0;
@@ -210,9 +271,17 @@
       };
       return (words[selectedMood]||[]).some(word=>text.includes(word)) || (item.moods||[]).includes(selectedMood);
     }
-    async function loadOnlineQuotes(){
+    function safeQuoteSourceUrl(value){
       try{
-        const response=await fetch("https://positivequotation.com/api/v1/quotes?limit=30",{headers:{Accept:"application/json"},cache:"no-store"});
+        const url=new URL(value);
+        return url.protocol==="https:" ? url.href : "https://positivequotation.com/developers/";
+      }catch(error){return "https://positivequotation.com/developers/"}
+    }
+    async function loadOnlineQuotes(){
+      const controller=new AbortController();
+      const timeoutId=setTimeout(()=>controller.abort(),8000);
+      try{
+        const response=await fetch("https://positivequotation.com/api/v1/quotes?limit=30",{headers:{Accept:"application/json"},cache:"no-store",signal:controller.signal});
         if(!response.ok)throw new Error("Source collection unavailable");
         const result=await response.json();
         const records=Array.isArray(result.data)?result.data:[];
@@ -221,11 +290,12 @@
           author:String(record.attribution||"Traditional / source attribution").trim(),
           category:"PUBLIC-DOMAIN PROVERB",
           sourceLabel:record.source?.title ? "Source: "+record.source.title : "PositiveQuotation quote record",
-          sourceUrl:record.source?.url||record.detail_url||"https://positivequotation.com/developers/",
-          recordUrl:record.detail_url||"https://positivequotation.com/developers/",
+          sourceUrl:safeQuoteSourceUrl(record.source?.url||record.detail_url),
+          recordUrl:safeQuoteSourceUrl(record.detail_url),
           kind:"external"
         })).filter(item=>item.text&&item.text.length<700&&item.sourceUrl);
       }catch(error){onlineQuotes=[]}
+      finally{clearTimeout(timeoutId)}
     }
     function showQuote(index){
       currentQuote=index;
@@ -269,6 +339,18 @@
       rotationTimer=setInterval(()=>{if(!document.hidden)showRandomQuote()},120000);
     }
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)resetRotationTimer()});
+    function openWhatsAppDraft(message,statusId){
+      const url="https://wa.me/2349118309320?text="+encodeURIComponent(message);
+      const status=document.getElementById(statusId);
+      status.textContent="WhatsApp should open with your draft. If it does not, ";
+      const link=document.createElement("a");
+      link.href=url;
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      link.textContent="tap here to open WhatsApp";
+      status.append(link);
+      window.open(url,"_blank","noopener,noreferrer");
+    }
     document.getElementById("community-quote-form").addEventListener("submit",event=>{
       event.preventDefault();
       const quote=document.getElementById("community-quote").value.trim();
@@ -276,10 +358,9 @@
       const link=document.getElementById("community-link").value.trim();
       if(!quote||!author||!document.getElementById("community-permission").checked)return;
       const message="Hello Leo, I would like to submit a quote for AirLeo review.\n\nQuote/message: "+quote+"\nName/brand: "+author+"\nWebsite/social: "+(link||"Not provided")+"\n\nI confirm I have the right to submit this text and give AirLeo permission to display it with attribution if approved. I understand promotional content may be labelled as advertising.";
-      document.getElementById("community-quote-status").textContent="Opening WhatsApp so you can review and send your submission. It will not be published automatically.";
-      window.open("https://wa.me/2349118309320?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");
+      openWhatsAppDraft(message,"community-quote-status");
     });
-    document.getElementById("quote-request-form").addEventListener("submit",event=>{event.preventDefault();const topic=document.getElementById("request-topic").value;const details=document.getElementById("request-details").value.trim();if(!topic)return;const message="Hello Leo, I would like an AirLeo quote about: "+topic+"."+(details?"\\nA little context: "+details:"");document.getElementById("request-status").textContent="Opening WhatsApp with your draft…";window.open("https://wa.me/2349118309320?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");});
+    document.getElementById("quote-request-form").addEventListener("submit",event=>{event.preventDefault();const topic=document.getElementById("request-topic").value;const details=document.getElementById("request-details").value.trim();if(!topic)return;const message="Hello Leo, I would like an AirLeo quote about: "+topic+"."+(details?"\nA little context: "+details:"");openWhatsAppDraft(message,"request-status");});
     const moodMessages={Calm:"Let yourself enjoy the quiet. You do not need to rush a peaceful moment.",Hopeful:"Protect that little spark. One small step is enough for today.",Tired:"Rest is part of moving forward. Choose one thing you can make lighter.",Overwhelmed:"You do not have to solve everything at once. What is the next smallest step?",Unsure:"You can take your time. Clarity often comes after you begin gently."};
     function applyMood(mood,{persist=true}={}){
       selectedMood=mood;
@@ -311,7 +392,7 @@
       }
     });
     document.getElementById("challenge").addEventListener("click",()=>{const current=document.getElementById("challenge-text").textContent;let next;do{next=challenges[Math.floor(Math.random()*challenges.length)]}while(next===current);document.getElementById("challenge-text").textContent=next;document.getElementById("challenge-note").textContent="You’ve got this. Small is still meaningful."});
-    document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=JSON.parse(localStorage.getItem("airleo-saved-quotes")||"[]");const item={text:quoteEl.textContent,category:categoryEl.textContent,author:currentQuoteRecord?.author||"",sourceUrl:currentQuoteRecord?.sourceUrl||""};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
+    document.getElementById("save-quote").addEventListener("click",()=>{try{const saved=getSaved();const item={text:quoteEl.textContent,category:categoryEl.textContent,author:currentQuoteRecord?.author||"",sourceUrl:currentQuoteRecord?.sourceUrl||""};const exists=saved.some(q=>q.text===item.text);if(exists){localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved.filter(q=>q.text!==item.text)));document.getElementById("save-quote").textContent="♡ Save";document.getElementById("save-status").textContent="Removed from saved quotes on this device."}else{saved.push(item);localStorage.setItem("airleo-saved-quotes",JSON.stringify(saved));document.getElementById("save-quote").textContent="♥ Saved";document.getElementById("save-status").textContent="Saved on this device. It won’t sync to other devices yet."}renderSaved()}catch(e){document.getElementById("save-status").textContent="Saving is unavailable in this browser session."}});
     document.getElementById("share-quote").addEventListener("click",async()=>{const text="“"+quoteEl.textContent+"” — "+(currentQuoteRecord?.author||document.getElementById("quote-day").textContent.split(" · ")[0]||"AirLeo")+(currentQuoteRecord?.sourceUrl?"\nSource: "+currentQuoteRecord.sourceUrl:"");try{if(navigator.share){await navigator.share({title:"A little lift from AirLeo",text,url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(text+" "+location.href);document.getElementById("save-status").textContent="Quote copied. Share it with someone who might need it."}else{document.getElementById("save-status").textContent=text}}catch(e){if(e.name!=="AbortError")document.getElementById("save-status").textContent="You can copy this quote: "+text}});
     document.getElementById("theme-toggle").addEventListener("click",()=>{const night=document.body.classList.toggle("night");document.getElementById("theme-toggle").textContent=night?"☀":"☾";document.getElementById("theme-toggle").setAttribute("aria-label",night?"Switch to cream theme":"Switch to dark theme");document.querySelector('meta[name="theme-color"]').setAttribute("content",night?"#25291f":"#f8f2e5");try{localStorage.setItem("airleo-theme",night?"night":"cream")}catch(e){}});
     try{if(localStorage.getItem("airleo-theme")==="night"){document.body.classList.add("night");document.getElementById("theme-toggle").textContent="☀";document.getElementById("theme-toggle").setAttribute("aria-label","Switch to cream theme");document.querySelector('meta[name="theme-color"]').setAttribute("content","#25291f")}}catch(e){}
