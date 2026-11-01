@@ -216,6 +216,12 @@
       };
       return (words[selectedMood]||[]).some(word=>text.includes(word)) || (item.moods||[]).includes(selectedMood);
     }
+    function safeQuoteSourceUrl(value){
+      try{
+        const url=new URL(value);
+        return url.protocol==="https:" ? url.href : "https://positivequotation.com/developers/";
+      }catch(error){return "https://positivequotation.com/developers/"}
+    }
     async function loadOnlineQuotes(){
       const controller=new AbortController();
       const timeoutId=setTimeout(()=>controller.abort(),8000);
@@ -229,8 +235,8 @@
           author:String(record.attribution||"Traditional / source attribution").trim(),
           category:"PUBLIC-DOMAIN PROVERB",
           sourceLabel:record.source?.title ? "Source: "+record.source.title : "PositiveQuotation quote record",
-          sourceUrl:record.source?.url||record.detail_url||"https://positivequotation.com/developers/",
-          recordUrl:record.detail_url||"https://positivequotation.com/developers/",
+          sourceUrl:safeQuoteSourceUrl(record.source?.url||record.detail_url),
+          recordUrl:safeQuoteSourceUrl(record.detail_url),
           kind:"external"
         })).filter(item=>item.text&&item.text.length<700&&item.sourceUrl);
       }catch(error){onlineQuotes=[]}
