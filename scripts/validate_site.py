@@ -14,6 +14,7 @@ class SiteParser(HTMLParser):
         self.script_parts = []
         self.main_count = 0
         self.document_language = None
+        self.toggle_buttons = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -21,6 +22,8 @@ class SiteParser(HTMLParser):
             self.document_language = attrs.get("lang")
         if tag == "main":
             self.main_count += 1
+        if tag == "button" and (attrs.get("id") == "save-quote" or "mood-btn" in attrs.get("class", "").split()):
+            self.toggle_buttons.append((attrs.get("id") or attrs.get("data-mood") or "mood button", attrs.get("aria-pressed")))
         if "id" in attrs:
             self.ids.append(attrs["id"])
         if tag == "label" and attrs.get("for"):
@@ -59,6 +62,10 @@ if not parser.document_language:
 
 if parser.main_count != 1:
     fail(f"expected exactly one main landmark, found {parser.main_count}")
+
+missing_toggle_states = [name for name, state in parser.toggle_buttons if state != "false"]
+if missing_toggle_states:
+    fail("toggle buttons must start with aria-pressed=\"false\": " + ", ".join(missing_toggle_states))
 
 duplicates = sorted({value for value in parser.ids if parser.ids.count(value) > 1})
 if duplicates:
