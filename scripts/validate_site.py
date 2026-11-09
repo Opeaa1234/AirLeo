@@ -99,4 +99,4 @@ for number, script in enumerate(parser.scripts, start=1):
     if result.returncode:
         fail(f"inline JavaScript block {number} has a syntax error:\n{result.stderr}")
 
-print("AirLeo checks passed: document language, one main landmark, unique IDs, required features, label targets, and JavaScript syntax.")
+print("AirLeo checks passed: document language, one main landmark, accessible toggle states, unique IDs, required features, label targets, and JavaScript syntax.")
