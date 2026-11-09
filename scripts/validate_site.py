@@ -67,7 +67,7 @@ if duplicates:
 required_ids = {
     "quote", "new-quote", "save-quote", "share-quote",
     "saved-quotes-list", "community-quote-form", "quote-request-form",
-    "theme-toggle", "challenge", "mood-response",
+    "theme-toggle", "challenge", "mood-response", "main-content",
 }
 missing = sorted(required_ids - set(parser.ids))
 if missing:
