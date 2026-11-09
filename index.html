@@ -16,6 +16,7 @@
     :root{color-scheme:light;--paper:#f8f2e5;--paper-deep:#efe3cb;--ink:#2d332b;--muted:#686b5d;--accent:#c65d3a;--accent-dark:#9f432a;--olive:#727b50;--line:#d9ceb8;--card:#fffaf0;--shadow:0 12px 35px #55462a12}
     *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}body{margin:0;color:var(--ink);background-color:var(--paper);background-image:repeating-linear-gradient(0deg,transparent 0 47px,#7b6b4d0b 48px 49px),radial-gradient(ellipse at 15% 5%,#fffdf5 0,transparent 42%);font:16px/1.65 ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif}
     a{color:inherit}button,input,select{font:inherit}.wrap{width:min(1020px,calc(100% - 36px));margin-inline:auto}
+    .skip-link{position:absolute;top:8px;left:8px;z-index:20;padding:10px 14px;border-radius:8px;background:var(--ink);color:var(--paper);font-weight:800;transform:translateY(-160%);transition:transform .15s ease}.skip-link:focus{transform:translateY(0)}
     .topbar{position:sticky;top:0;z-index:5;background:#f8f2e5eF;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}header{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
     .brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-size:1.05rem;font-weight:950;letter-spacing:.07em}.brand-mark{display:grid;place-items:center;width:35px;height:35px;border-radius:11px;background:var(--accent);color:#fff8e9;font-size:1.2rem;transform:rotate(-5deg)}.brand span:last-child{color:var(--accent)}
     nav{display:flex;align-items:center;gap:clamp(10px,2.5vw,24px);font-size:.9rem;font-weight:700}nav a{text-decoration:none;color:var(--muted)}nav a:hover{color:var(--accent)}
@@ -64,6 +65,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="topbar"><header class="wrap">
     <a class="brand" href="#home" aria-label="AirLeo home"><span class="brand-mark">✳</span><span>AIR<span>LEO</span></span></a>
     <nav aria-label="Main navigation"><a href="#daily">Daily lift</a><a href="#challenges">Challenges</a><a href="#submit-quote">Submit quote</a><a href="#community">Community</a><button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button></nav>
@@ -80,7 +82,7 @@
     </section>
   </div>
   <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>Grow at your pace</span><span>Kindness counts</span><span>Start where you are</span><span>Little steps matter</span><span>Grow at your pace</span><span>Kindness counts</span><span>Start where you are</span><span>Little steps matter</span></div></div>
-  <main class="wrap">
+  <main id="main-content" class="wrap">
     <section id="daily" class="section">
       <div class="section-head"><div><div class="kicker">Your moment</div><h2>A daily little lift</h2></div><p class="section-intro">Take what you need today. Come back tomorrow for another perspective.</p></div>
       <div class="quote-layout">
