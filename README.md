@@ -1,18 +1,39 @@
 # AirLeo
 
-AirLeo is a lightweight, mobile-friendly home for daily motivation, quotes, mini challenges, and community links by LEO THE PROGRAMMER.
+AirLeo is a lightweight, responsive, single-page home for daily motivation, thoughtful quotes, mini challenges, and community links by **Leo the Programmer**.
 
-## Current starter
+## What works today
 
-- `index.html` is a static, responsive landing page.
-- Daily quotes and the “Give It A Go” challenge work in the browser without a database.
-- WhatsApp community and contact links are included.
-- The page avoids collecting visitor IP data.
+- Responsive landing page with mobile navigation and keyboard-visible focus states.
+- Daily quote card with original AirLeo reminders and optional attributed quotes loaded from PositiveQuotation.
+- Quote mood matching and automatic rotation, with a local fallback when the quote service is unavailable.
+- Save, remove, share, and copy/export saved quotes. Saved items stay in the current browser and do not sync between devices.
+- Private daily mood check-in stored locally in the browser.
+- Rotating mini challenges.
+- Quote requests and community submissions prepared as WhatsApp drafts. Visitors review and send messages themselves; submissions are not stored or published automatically.
+- Cream and dark themes, reduced-motion support, social sharing metadata, and safe external-link handling.
 
-## Next steps
+## Run locally
 
-1. Configure GitHub Pages in **Settings → Pages** and publish from the `main` branch, root folder. GitHub Pages needs an entry file such as `index.html` in the publishing folder.
-2. Configure Firebase Authentication and Firestore before adding accounts or saved user content. Keep Firestore rules closed until the data model and access rules are ready.
-3. Add payment processing only with a secure server-side payment verification flow; never put a Paystack secret key in browser code.
+This is a static site; no build step or package installation is required.
 
-This is a starter version. Sign-in, saved quotes, custom quote requests, and payment verification are not implemented yet.
+1. Clone the repository.
+2. Open `index.html` directly in a browser, or serve the repository root with any static HTTP server.
+3. Run the structural and JavaScript checks:
+
+```bash
+python scripts/validate_site.py
+```
+
+The validator checks the document language, unique IDs, required interface elements, label targets, the single main landmark, and inline JavaScript syntax (using Node.js).
+
+## Deployment
+
+GitHub Pages can publish the root of the `main` branch from **Settings → Pages**. Changes on the development branch are not live until they are merged and the publishing source is configured.
+
+## Important boundaries
+
+- No account system, server-side storage, or cross-device sync is currently implemented.
+- Saved quotes, theme preference, and mood check-in use browser-local storage.
+- WhatsApp forms only prepare a message; they do not send it automatically.
+- Do not add payment secrets or private API keys to this static client-side project. Any future payment or authenticated data feature needs a trusted server-side implementation and appropriate access rules.
