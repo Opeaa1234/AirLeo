@@ -12,9 +12,15 @@ class SiteParser(HTMLParser):
         self.scripts = []
         self.in_script = False
         self.script_parts = []
+        self.main_count = 0
+        self.document_language = None
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "html":
+            self.document_language = attrs.get("lang")
+        if tag == "main":
+            self.main_count += 1
         if "id" in attrs:
             self.ids.append(attrs["id"])
         if tag == "label" and attrs.get("for"):
@@ -48,6 +54,12 @@ try:
 except Exception as error:
     fail(f"HTML parsing failed: {error}")
 
+if not parser.document_language:
+    fail("html element must declare a document language")
+
+if parser.main_count != 1:
+    fail(f"expected exactly one main landmark, found {parser.main_count}")
+
 duplicates = sorted({value for value in parser.ids if parser.ids.count(value) > 1})
 if duplicates:
     fail("duplicate HTML id values: " + ", ".join(duplicates))
@@ -80,4 +92,4 @@ for number, script in enumerate(parser.scripts, start=1):
     if result.returncode:
         fail(f"inline JavaScript block {number} has a syntax error:\n{result.stderr}")
 
-print("AirLeo checks passed: unique IDs, required features, label targets, and JavaScript syntax.")
+print("AirLeo checks passed: document language, one main landmark, unique IDs, required features, label targets, and JavaScript syntax.")
