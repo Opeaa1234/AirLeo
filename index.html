@@ -185,6 +185,11 @@
     function renderSaved(){
       const host=document.getElementById("saved-quotes-list");
       const saved=getSaved();
+      const currentQuoteText=quoteEl.textContent;
+      const currentQuoteIsSaved=saved.some(item=>item.text===currentQuoteText);
+      const saveButton=document.getElementById("save-quote");
+      saveButton.textContent=currentQuoteIsSaved?"♥ Saved":"♡ Save";
+      saveButton.setAttribute("aria-pressed",String(currentQuoteIsSaved));
       host.replaceChildren();
       if(!saved.length){
         const empty=document.createElement("p");
