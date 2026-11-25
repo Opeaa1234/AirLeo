@@ -94,7 +94,7 @@
             <button class="btn auth-tab" id="airleo-tab-login" type="button" role="tab" aria-selected="false" aria-controls="airleo-auth-fields">Sign In</button>
           </div>
           <p style="color:var(--muted);font-size:.92rem">Creating an account shares your email and display name with the AirLeo site administrator. Your email and login time are private and are not shown on the public community board.</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <div id="airleo-auth-fields" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
             <div id="airleo-display-name-wrap"><label for="airleo-display-name">Display name</label><input id="airleo-display-name" maxlength="60" autocomplete="nickname" placeholder="Your name" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
             <div><label for="airleo-email">Email</label><input id="airleo-email" type="email" autocomplete="email" required placeholder="you@example.com" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
             <div><label for="airleo-password">Password</label><input id="airleo-password" type="password" minlength="8" autocomplete="current-password" required placeholder="At least 8 characters" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
