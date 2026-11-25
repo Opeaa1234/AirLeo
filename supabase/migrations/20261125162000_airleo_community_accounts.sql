@@ -1,5 +1,6 @@
 
 -- AirLeo community accounts, moderation and consent-based analytics.
+create schema if not exists private;
 -- This migration is isolated to airleo_-prefixed public tables and a private helper.
 create table if not exists public.airleo_analytics_events (
   id bigint generated always as identity primary key,
