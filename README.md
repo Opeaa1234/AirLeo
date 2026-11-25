@@ -70,7 +70,7 @@ Only this explicit admin profile can view anonymous visit totals and review memb
 
 - Anonymous analytics are opt-in. A small consent prompt lets visitors allow or decline.
 - If allowed, AirLeo records a page-view event, a random per-tab session identifier, the page path, and timestamp. It does not collect IP addresses, precise location, names, emails, or full user-agent strings for analytics.
-- Account registration stores the member's email with Supabase Auth and a display name in the AirLeo profile table.
+- Account registration stores the member's email with Supabase Auth and a display name in the AirLeo profile table. The private admin area shows registered member emails and last sign-in timestamps; this information is never shown on the public board.
 - Community posts are private to their author and the site administrator while pending or rejected. Approved posts appear on the public community board. Admins can mark them pending, approved, or rejected.
 - Visitors can continue using the original quotes, mood check-ins, saved quotes, challenges, and WhatsApp forms without an account.
 
