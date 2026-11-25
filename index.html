@@ -68,7 +68,7 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="topbar"><header class="wrap">
     <a class="brand" href="#home" aria-label="AirLeo home"><span class="brand-mark">✳</span><span>AIR<span>LEO</span></span></a>
-    <nav aria-label="Main navigation"><a href="#daily">Daily lift</a><a href="#challenges">Challenges</a><a href="#submit-quote">Submit quote</a><a href="#community">Community</a><button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button></nav>
+    <nav aria-label="Main navigation"><a href="#daily">Daily lift</a><a href="#challenges">Challenges</a><a href="#submit-quote">Submit quote</a><a href="#members">Join</a><a href="#community">Community</a><button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button></nav>
   </header></div>
   <div id="home" class="wrap">
     <section class="hero">
@@ -165,6 +165,7 @@
           <button class="btn" id="airleo-logout" type="button">Log out</button>
         </div>
         <p id="airleo-auth-status" role="status" aria-live="polite" style="margin-bottom:0;color:var(--muted)">Accounts are optional. You can continue using AirLeo without signing in.</p>
+        <h3 style="margin-top:24px">Community board</h3><div id="airleo-public-posts" aria-live="polite">Approved community posts will appear here.</div>
       </div>
     </section>
     <section id="airleo-admin" class="section" hidden>
@@ -484,6 +485,14 @@
           document.getElementById("airleo-admin").hidden=true;
         }
       }
+      async function loadPublicPosts(){
+        const target=document.getElementById("airleo-public-posts");
+        const {data,error}=await client.from("airleo_community_posts").select("body,created_at").eq("status","approved").order("created_at",{ascending:false}).limit(30);
+        if(error){target.textContent="Community posts are temporarily unavailable.";return}
+        target.replaceChildren();
+        if(!data.length){target.textContent="No community posts have been published yet. Members can share the first one." ;return}
+        data.forEach(post=>{const article=document.createElement("p");article.textContent=post.body;article.style.cssText="padding:10px 0;border-bottom:1px solid var(--line)";target.append(article)});
+      }
       async function loadMemberPosts(){
         const {data,error}=await client.from("airleo_community_posts").select("body,status,created_at").eq("author_id",currentUser.id).order("created_at",{ascending:false}).limit(10);
         const target=document.getElementById("airleo-member-status");
@@ -554,6 +563,7 @@
         document.getElementById("airleo-consent-yes").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","yes");consent.hidden=true;recordVisit()});
         document.getElementById("airleo-consent-no").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","no");consent.hidden=true});
         await recordVisit();
+        loadPublicPosts();
         const {data}=await client.auth.getSession();
         updateAuth(data.session?.user||null);
         client.auth.onAuthStateChange((_event,session)=>updateAuth(session?.user||null));
