@@ -467,11 +467,13 @@
         }catch(e){return null}
       }
       async function recordVisit(){
-        if(!client||localStorage.getItem("airleo-analytics-consent")!=="yes")return;
-        const sessionId=getSessionId();
-        if(!sessionId||sessionStorage.getItem("airleo-visit-recorded")==="yes")return;
-        const {error}=await client.from("airleo_analytics_events").insert({event_type:"page_view",page_path:location.pathname.slice(0,300)||"/",session_id:sessionId});
-        if(!error)sessionStorage.setItem("airleo-visit-recorded","yes");
+        try{
+          if(!client||localStorage.getItem("airleo-analytics-consent")!=="yes")return;
+          const sessionId=getSessionId();
+          if(!sessionId||sessionStorage.getItem("airleo-visit-recorded")==="yes")return;
+          const {error}=await client.from("airleo_analytics_events").insert({event_type:"page_view",page_path:location.pathname.slice(0,300)||"/",session_id:sessionId});
+          if(!error)sessionStorage.setItem("airleo-visit-recorded","yes");
+        }catch(error){/* Analytics must never block the site. */}
       }
       function updateAuth(user){
         currentUser=user||null;
@@ -558,10 +560,11 @@
           document.getElementById("airleo-member-status").textContent=error?"Your submission could not be saved. Please try again.":"Thanks. Your post is awaiting Leo’s review.";
           if(!error){document.getElementById("airleo-member-post").value="";loadMemberPosts()}
         });
-        const choice=localStorage.getItem("airleo-analytics-consent");
+        let choice=null;
+        try{choice=localStorage.getItem("airleo-analytics-consent")}catch(error){}
         if(!choice){consent.hidden=false}
-        document.getElementById("airleo-consent-yes").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","yes");consent.hidden=true;recordVisit()});
-        document.getElementById("airleo-consent-no").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","no");consent.hidden=true});
+        document.getElementById("airleo-consent-yes").addEventListener("click",()=>{try{localStorage.setItem("airleo-analytics-consent","yes")}catch(error){}consent.hidden=true;recordVisit()});
+        document.getElementById("airleo-consent-no").addEventListener("click",()=>{try{localStorage.setItem("airleo-analytics-consent","no")}catch(error){}consent.hidden=true});
         document.getElementById("airleo-privacy-settings").addEventListener("click",()=>{consent.hidden=false});
         await recordVisit();
         loadPublicPosts();
