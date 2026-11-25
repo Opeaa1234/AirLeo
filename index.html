@@ -181,7 +181,7 @@
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="airleo-consent-yes" type="button">Allow anonymous analytics</button><button class="btn" id="airleo-consent-no" type="button">No thanks</button></div>
     </div>
   </main>
-  <footer><div class="wrap footer-row"><div><strong>AIRLEO</strong> · LEO THE PROGRAMMER<br>A little lift for everyday life.</div><div>Made with care. Take it one step at a time. ✳</div></div></footer>
+  <footer><div class="wrap footer-row"><div><strong>AIRLEO</strong> · LEO THE PROGRAMMER<br>A little lift for everyday life.</div><div>Made with care. Take it one step at a time. ✳ <button class="btn" id="airleo-privacy-settings" type="button" style="margin-left:8px">Privacy settings</button></div></div></footer>
   <script>
     // These are original AirLeo reminders, grouped by the visitor's optional mood check-in.
     const quoteItems = [
@@ -562,6 +562,7 @@
         if(!choice){consent.hidden=false}
         document.getElementById("airleo-consent-yes").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","yes");consent.hidden=true;recordVisit()});
         document.getElementById("airleo-consent-no").addEventListener("click",()=>{localStorage.setItem("airleo-analytics-consent","no");consent.hidden=true});
+        document.getElementById("airleo-privacy-settings").addEventListener("click",()=>{consent.hidden=false});
         await recordVisit();
         loadPublicPosts();
         const {data}=await client.auth.getSession();
