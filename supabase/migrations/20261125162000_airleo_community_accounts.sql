@@ -19,6 +19,7 @@ create table if not exists public.airleo_profiles (
 );
 alter table public.airleo_profiles add column if not exists email text;
 alter table public.airleo_profiles add column if not exists last_sign_in_at timestamptz;
+update public.airleo_profiles p set email = u.email, last_sign_in_at = u.last_sign_in_at from auth.users u where p.user_id = u.id;
 create table if not exists public.airleo_community_posts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references auth.users(id) on delete cascade,
