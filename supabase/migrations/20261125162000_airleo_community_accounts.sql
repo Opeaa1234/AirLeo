@@ -12,6 +12,8 @@ create table if not exists public.airleo_analytics_events (
 create table if not exists public.airleo_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default 'AirLeo member' check (char_length(display_name) between 1 and 60),
+  email text,
+  last_sign_in_at timestamptz,
   is_admin boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -34,7 +36,7 @@ revoke all on public.airleo_analytics_events from anon, authenticated;
 grant insert on public.airleo_analytics_events to anon, authenticated;
 grant select on public.airleo_analytics_events to authenticated;
 revoke all on public.airleo_profiles from anon, authenticated;
-grant select (user_id, display_name, is_admin, created_at) on public.airleo_profiles to authenticated;
+grant select (user_id, display_name, is_admin, email, last_sign_in_at, created_at) on public.airleo_profiles to authenticated;
 grant update (display_name) on public.airleo_profiles to authenticated;
 revoke all on public.airleo_community_posts from anon, authenticated;
 grant select on public.airleo_community_posts to anon, authenticated;
@@ -57,15 +59,22 @@ create or replace function public.handle_airleo_new_user()
 returns trigger language plpgsql security definer set search_path = ''
 as $$
 begin
-  insert into public.airleo_profiles (user_id, display_name)
-  values (new.id, coalesce(nullif(new.raw_user_meta_data ->> 'display_name',''), 'AirLeo member'))
-  on conflict (user_id) do nothing;
+  insert into public.airleo_profiles (user_id, display_name, email, last_sign_in_at)
+  values (
+    new.id,
+    coalesce(nullif(new.raw_user_meta_data ->> 'display_name',''), 'AirLeo member'),
+    new.email,
+    new.last_sign_in_at
+  )
+  on conflict (user_id) do update
+    set email = excluded.email,
+        last_sign_in_at = excluded.last_sign_in_at;
   return new;
 end;
 $$;
 revoke all on function public.handle_airleo_new_user() from public, anon, authenticated;
 drop trigger if exists on_airleo_auth_user_created on auth.users;
-create trigger on_airleo_auth_user_created after insert on auth.users
+create trigger on_airleo_auth_user_created after insert or update of email, last_sign_in_at on auth.users
 for each row execute function public.handle_airleo_new_user();
 
 drop policy if exists "airleo analytics insert only" on public.airleo_analytics_events;
