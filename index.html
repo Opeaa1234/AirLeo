@@ -172,7 +172,7 @@
       <div class="section-head"><div><div class="kicker">Private area</div><h2>AirLeo admin</h2></div><p class="section-intro">Visitor counts and community submissions. Only an account explicitly granted AirLeo admin access can view this area.</p></div>
       <div class="paper-card" style="padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card)">
         <h3>Page visits</h3><p id="airleo-analytics-summary" aria-live="polite">Loading analytics…</p>
-        <h3>Community submissions</h3><div id="airleo-admin-posts" aria-live="polite"></div>
+        <h3>Registered members</h3><div id="airleo-admin-members" aria-live="polite"></div><h3>Community submissions</h3><div id="airleo-admin-posts" aria-live="polite"></div>
       </div>
     </section>
     <div id="airleo-consent" role="region" aria-label="Privacy choices" hidden style="position:fixed;z-index:20;bottom:14px;left:14px;right:14px;max-width:760px;margin:auto;padding:16px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 40px #0002">
@@ -516,6 +516,12 @@
         const today=new Date().toISOString().slice(0,10);
         const todayCount=data.filter(row=>row.created_at.slice(0,10)===today).length;
         summary.textContent="Recorded page views: "+data.length+" (most recent 5,000). Today: "+todayCount+". Statistics are anonymous and consent-based.";
+        const members=await client.from("airleo_profiles").select("display_name,email,created_at,last_sign_in_at").order("created_at",{ascending:false}).limit(500);
+        const memberTarget=document.getElementById("airleo-admin-members");
+        if(members.error){memberTarget.textContent="Member directory is unavailable.";return}
+        memberTarget.replaceChildren();
+        if(!members.data.length){memberTarget.textContent="No registered members yet."}
+        members.data.forEach(member=>{const row=document.createElement("p");row.textContent=(member.display_name||"AirLeo member")+" · "+(member.email||"No email")+" · joined "+new Date(member.created_at).toLocaleDateString()+" · last login "+(member.last_sign_in_at?new Date(member.last_sign_in_at).toLocaleString():"not yet recorded");row.style.cssText="padding:8px 0;border-bottom:1px solid var(--line)";memberTarget.append(row)});
         const posts=await client.from("airleo_community_posts").select("id,body,status,created_at,author_id").order("created_at",{ascending:false}).limit(50);
         const target=document.getElementById("airleo-admin-posts");
         if(posts.error){target.textContent="Submissions could not be loaded.";return}
