@@ -54,6 +54,7 @@
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.feature{transition:transform .2s,box-shadow .2s}.feature:hover{transform:translateY(-4px);box-shadow:0 18px 35px #55462a17}.feature-number{font:italic 1.4rem Georgia,serif;color:var(--accent)}.feature h3{margin:8px 0 4px}.feature p{color:var(--muted);margin:0 0 14px}.text-link{font-weight:850;text-decoration-thickness:1px;text-underline-offset:4px;color:var(--accent-dark)}
     .saved-list{display:grid;gap:10px}.saved-item{display:flex;align-items:start;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.saved-item p{margin:0;font:1.1rem/1.4 Georgia,serif}.saved-item small{display:block;color:var(--muted);margin-top:6px}.saved-item button{flex-shrink:0}.challenge-box{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;background:var(--paper-deep);border:1px dashed #b8a17c;border-radius:16px;padding:clamp(20px,4vw,32px)}.challenge-box h3{font:clamp(1.4rem,3vw,2rem)/1.15 Georgia,serif;margin:7px 0}.challenge-box p{color:var(--muted);margin:0}.challenge-result{margin-top:12px!important;color:var(--ink)!important;font-weight:750;min-height:1.6em}
     .community{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;background:#e6d6b9;border-radius:16px;padding:clamp(22px,4vw,36px);border:1px solid #d1bea0}.community h2{font:clamp(1.7rem,4vw,2.6rem)/1.1 Georgia,serif;margin:8px 0}.community p{color:#55594b;max-width:530px;margin:0}
+    .auth-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.auth-tab[aria-selected="true"]{background:var(--accent);color:#fffaf0;border-color:var(--accent)}#members{scroll-margin-top:100px}
     footer{padding:26px 0 38px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.footer-row strong{color:var(--ink)}
     body.night{color-scheme:dark;--paper:#25291f;--paper-deep:#303628;--ink:#f4ecd9;--muted:#c1c1ac;--accent:#e58a63;--accent-dark:#c96d49;--olive:#747d55;--line:#4c5140;--card:#303328;--shadow:0 12px 35px #0002;background-image:repeating-linear-gradient(0deg,transparent 0 47px,#ffffff07 48px 49px),radial-gradient(ellipse at 15% 5%,#454938 0,transparent 42%)}body.night .topbar{background:#25291fee}body.night .pill{background:#3b4030}body.night .community{background:#383e2e;border-color:var(--line)}body.night .community p{color:var(--muted)}body.night .ticker{background:var(--paper-deep)}
     .fade-in{animation:appear .65s both}.fade-in:nth-child(2){animation-delay:.08s}.fade-in:nth-child(3){animation-delay:.16s}
@@ -63,12 +64,13 @@
     @media(max-width:420px){.wrap{width:calc(100% - 24px)}header{min-height:64px;flex-wrap:wrap;align-items:center}.brand{font-size:.92rem}.brand-mark{width:30px;height:30px}nav{width:100%;justify-content:flex-start;gap:8px 12px}nav a:first-child{display:inline}.icon-btn{padding:7px 9px}.hero-art{min-height:230px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="topbar"><header class="wrap">
     <a class="brand" href="#home" aria-label="AirLeo home"><span class="brand-mark">✳</span><span>AIR<span>LEO</span></span></a>
-    <nav aria-label="Main navigation"><a href="#daily">Daily lift</a><a href="#challenges">Challenges</a><a href="#submit-quote">Submit quote</a><a href="#community">Community</a><button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button></nav>
+    <nav aria-label="Main navigation"><a href="#daily">Daily lift</a><a href="#challenges">Challenges</a><a href="#submit-quote">Submit quote</a><a href="#members" data-open-auth="signup">Sign Up</a><a href="#members" data-open-auth="login">Sign In</a><a href="#community">Community</a><button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button></nav>
   </header></div>
   <div id="home" class="wrap">
     <section class="hero">
@@ -83,6 +85,36 @@
   </div>
   <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>Grow at your pace</span><span>Kindness counts</span><span>Start where you are</span><span>Little steps matter</span><span>Grow at your pace</span><span>Kindness counts</span><span>Start where you are</span><span>Little steps matter</span></div></div>
   <main id="main-content" class="wrap">
+    <section id="members" class="section">
+      <div class="section-head"><div><div class="kicker">AirLeo community</div><h2>Join the community</h2></div><p class="section-intro">Create an account to share your own thoughts with the AirLeo community. Your submissions are private until reviewed.</p></div>
+      <div class="paper-card" style="padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--card)">
+        <div id="airleo-auth-signed-out">
+          <div class="auth-tabs" role="tablist" aria-label="AirLeo account">
+            <button class="btn auth-tab" id="airleo-tab-signup" type="button" role="tab" aria-selected="true" aria-controls="airleo-auth-fields">Sign Up</button>
+            <button class="btn auth-tab" id="airleo-tab-login" type="button" role="tab" aria-selected="false" aria-controls="airleo-auth-fields">Sign In</button>
+          </div>
+          <p style="color:var(--muted);font-size:.92rem">Creating an account shares your email and display name with the AirLeo site administrator. Your email and login time are private and are not shown on the public community board.</p>
+          <div id="airleo-auth-fields" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+            <div id="airleo-display-name-wrap"><label for="airleo-display-name">Display name</label><input id="airleo-display-name" maxlength="60" autocomplete="nickname" placeholder="Your name" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
+            <div><label for="airleo-email">Email</label><input id="airleo-email" type="email" autocomplete="email" required placeholder="you@example.com" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
+            <div><label for="airleo-password">Password</label><input id="airleo-password" type="password" minlength="8" autocomplete="current-password" required placeholder="At least 8 characters" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)"></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"><button class="btn primary" id="airleo-signup" type="button">Create account</button><button class="btn primary" id="airleo-login" type="button" hidden>Sign in</button></div>
+        </div>
+        <div id="airleo-auth-signed-in" hidden>
+          <p id="airleo-member-welcome" style="font-weight:800"></p>
+          <form id="airleo-member-post-form">
+            <label for="airleo-member-post">Share a thought with the community</label>
+            <textarea id="airleo-member-post" rows="3" maxlength="1000" required placeholder="Write something encouraging…" style="display:block;width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);margin:8px 0 12px"></textarea>
+            <button class="btn primary" type="submit">Send for review</button>
+          </form>
+          <p id="airleo-member-status" aria-live="polite"></p>
+          <button class="btn" id="airleo-logout" type="button">Sign Out</button>
+        </div>
+        <p id="airleo-auth-status" role="status" aria-live="polite" style="margin-bottom:0;color:var(--muted)">Accounts are optional. You can continue using AirLeo without signing in.</p>
+        <h3 style="margin-top:24px">Community board</h3><div id="airleo-public-posts" aria-live="polite">Approved community posts will appear here.</div>
+      </div>
+    </section>
     <section id="daily" class="section">
       <div class="section-head"><div><div class="kicker">Your moment</div><h2>A daily little lift</h2></div><p class="section-intro">Take what you need today. Come back tomorrow for another perspective.</p></div>
       <div class="quote-layout">
@@ -142,8 +174,22 @@
     <section id="community" class="section">
       <div class="community"><div><div class="kicker">Better together</div><h2>Pass a little good along.</h2><p>Join the WhatsApp channel for updates, or message Leo directly. A kind word travels further when we share it.</p></div><div class="actions"><a class="btn primary" href="https://whatsapp.com/channel/0029VbDUfyT1dAw05z5f4U34" target="_blank" rel="noopener noreferrer">Join channel ↗</a><a class="btn" href="https://wa.me/2349118309320?text=Hello%20Leo%2C%20I%27m%20visiting%20AirLeo." target="_blank" rel="noopener noreferrer">Talk to Leo ↗</a></div></div>
     </section>
+
+
+    <section id="airleo-admin" class="section" hidden>
+      <div class="section-head"><div><div class="kicker">Private area</div><h2>AirLeo admin</h2></div><p class="section-intro">Visitor counts and community submissions. Only an account explicitly granted AirLeo admin access can view this area.</p></div>
+      <div class="paper-card" style="padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card)">
+        <h3>Page visits</h3><p id="airleo-analytics-summary" aria-live="polite">Loading analytics…</p>
+        <h3>Registered members</h3><div id="airleo-admin-members" aria-live="polite"></div><h3>Community submissions</h3><div id="airleo-admin-posts" aria-live="polite"></div>
+      </div>
+    </section>
+    <div id="airleo-consent" role="region" aria-label="Privacy choices" hidden style="position:fixed;z-index:20;bottom:14px;left:14px;right:14px;max-width:760px;margin:auto;padding:16px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 40px #0002">
+      <strong>Help us understand how AirLeo is used</strong>
+      <p style="margin:6px 0 12px">With your permission, AirLeo records anonymous page visits to help improve the site. We do not collect your name, email, precise location or browsing history for these statistics. You can still use AirLeo if you decline.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="airleo-consent-yes" type="button">Allow anonymous analytics</button><button class="btn" id="airleo-consent-no" type="button">No thanks</button></div>
+    </div>
   </main>
-  <footer><div class="wrap footer-row"><div><strong>AIRLEO</strong> · LEO THE PROGRAMMER<br>A little lift for everyday life.</div><div>Made with care. Take it one step at a time. ✳</div></div></footer>
+  <footer><div class="wrap footer-row"><div><strong>AIRLEO</strong> · LEO THE PROGRAMMER<br>A little lift for everyday life.</div><div>Made with care. Take it one step at a time. ✳ <button class="btn" id="airleo-privacy-settings" type="button" style="margin-left:8px">Privacy settings</button></div></div></footer>
   <script>
     // These are original AirLeo reminders, grouped by the visitor's optional mood check-in.
     const quoteItems = [
@@ -409,6 +455,152 @@
     showRandomQuote();
     loadOnlineQuotes().then(()=>showRandomQuote());
     resetRotationTimer();
+
+    // AirLeo optional accounts and consent-based, anonymous visitor analytics.
+    (function initAirLeoCommunity(){
+      const SUPABASE_URL="https://bmisigfyausmcxtcyniz.supabase.co";
+      const SUPABASE_KEY="sb_publishable_iVyc5ok_ikAGb4PRPM8CHg_H_siAtIW";
+      const status=document.getElementById("airleo-auth-status");
+      const signedOut=document.getElementById("airleo-auth-signed-out");
+      const signedIn=document.getElementById("airleo-auth-signed-in");
+      const consent=document.getElementById("airleo-consent");
+      let client=null;
+      let currentUser=null;
+      function say(message){if(status)status.textContent=message}
+      function getSessionId(){
+        try{
+          let id=sessionStorage.getItem("airleo-analytics-session");
+          if(!id){id=crypto.randomUUID();sessionStorage.setItem("airleo-analytics-session",id)}
+          return id;
+        }catch(e){return null}
+      }
+      async function recordVisit(){
+        try{
+          if(!client||localStorage.getItem("airleo-analytics-consent")!=="yes")return;
+          const sessionId=getSessionId();
+          if(!sessionId||sessionStorage.getItem("airleo-visit-recorded")==="yes")return;
+          const {error}=await client.from("airleo_analytics_events").insert({event_type:"page_view",page_path:location.pathname.slice(0,300)||"/",session_id:sessionId});
+          if(!error)sessionStorage.setItem("airleo-visit-recorded","yes");
+        }catch(error){/* Analytics must never block the site. */}
+      }
+      function updateAuth(user){
+        currentUser=user||null;
+        signedOut.hidden=!!user;
+        signedIn.hidden=!user;
+        if(user){
+          document.getElementById("airleo-member-welcome").textContent="Signed in as "+(user.user_metadata?.display_name||user.email||"AirLeo member")+".";
+          loadMemberPosts();
+          checkAdmin();
+        }else{
+          document.getElementById("airleo-admin").hidden=true;
+        }
+      }
+      async function loadPublicPosts(){
+        const target=document.getElementById("airleo-public-posts");
+        const {data,error}=await client.from("airleo_community_posts").select("body,created_at").eq("status","approved").order("created_at",{ascending:false}).limit(30);
+        if(error){target.textContent="Community posts are temporarily unavailable.";return}
+        target.replaceChildren();
+        if(!data.length){target.textContent="No community posts have been published yet. Members can share the first one." ;return}
+        data.forEach(post=>{const article=document.createElement("p");article.textContent=post.body;article.style.cssText="padding:10px 0;border-bottom:1px solid var(--line)";target.append(article)});
+      }
+      async function loadMemberPosts(){
+        const {data,error}=await client.from("airleo_community_posts").select("body,status,created_at").eq("author_id",currentUser.id).order("created_at",{ascending:false}).limit(10);
+        const target=document.getElementById("airleo-member-status");
+        if(error){target.textContent="Your submissions could not be loaded right now.";return}
+        target.textContent=data.length?data.map(item=>"• "+item.body+" — "+item.status).join("\n"):"You have not submitted a community post yet.";
+        target.style.whiteSpace="pre-line";
+      }
+      async function checkAdmin(){
+        const {data,error}=await client.from("airleo_profiles").select("is_admin").eq("user_id",currentUser.id).maybeSingle();
+        if(error||!data?.is_admin)return;
+        const panel=document.getElementById("airleo-admin");
+        panel.hidden=false;
+        loadAdminData();
+      }
+      async function loadAdminData(){
+        const {data,error}=await client.from("airleo_analytics_events").select("created_at").order("created_at",{ascending:false}).limit(5000);
+        const summary=document.getElementById("airleo-analytics-summary");
+        if(error){summary.textContent="Analytics are not available to this account.";return}
+        const today=new Date().toISOString().slice(0,10);
+        const todayCount=data.filter(row=>row.created_at.slice(0,10)===today).length;
+        summary.textContent="Recorded page views: "+data.length+" (most recent 5,000). Today: "+todayCount+". Statistics are anonymous and consent-based.";
+        const members=await client.from("airleo_profiles").select("display_name,email,created_at,last_sign_in_at").order("created_at",{ascending:false}).limit(500);
+        const memberTarget=document.getElementById("airleo-admin-members");
+        if(members.error){memberTarget.textContent="Member directory is unavailable.";return}
+        memberTarget.replaceChildren();
+        if(!members.data.length){memberTarget.textContent="No registered members yet."}
+        members.data.forEach(member=>{const row=document.createElement("p");row.textContent=(member.display_name||"AirLeo member")+" · "+(member.email||"No email")+" · joined "+new Date(member.created_at).toLocaleDateString()+" · last login "+(member.last_sign_in_at?new Date(member.last_sign_in_at).toLocaleString():"not yet recorded");row.style.cssText="padding:8px 0;border-bottom:1px solid var(--line)";memberTarget.append(row)});
+        const posts=await client.from("airleo_community_posts").select("id,body,status,created_at,author_id").order("created_at",{ascending:false}).limit(50);
+        const target=document.getElementById("airleo-admin-posts");
+        if(posts.error){target.textContent="Submissions could not be loaded.";return}
+        target.replaceChildren();
+        posts.data.forEach(post=>{
+          const article=document.createElement("article");
+          article.style.cssText="padding:12px 0;border-bottom:1px solid var(--line)";
+          const p=document.createElement("p");p.textContent=post.body+" — "+post.status;
+          const select=document.createElement("select");
+          ["pending","approved","rejected"].forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=value===post.status;select.append(option)});
+          select.addEventListener("change",async()=>{const result=await client.from("airleo_community_posts").update({status:select.value}).eq("id",post.id);if(result.error){select.value=post.status;summary.textContent="Could not update submission status."}});
+          article.append(p,select);target.append(article);
+        });
+      }
+      function setAuthTab(tab){
+        const signup=tab==="signup";
+        document.getElementById("airleo-tab-signup").setAttribute("aria-selected",String(signup));
+        document.getElementById("airleo-tab-login").setAttribute("aria-selected",String(!signup));
+        document.getElementById("airleo-display-name-wrap").hidden=!signup;
+        document.getElementById("airleo-signup").hidden=!signup;
+        document.getElementById("airleo-login").hidden=signup;
+        say(signup?"Create your AirLeo member account.":"Sign in to your AirLeo account.");
+      }
+      async function runAuth(action){
+        const email=document.getElementById("airleo-email").value.trim();
+        const password=document.getElementById("airleo-password").value;
+        if(!email||password.length<8){say("Enter a valid email and a password of at least 8 characters.");return}
+        say("Please wait…");
+        let result;
+        if(action==="signup"){
+          const displayName=document.getElementById("airleo-display-name").value.trim()||"AirLeo member";
+          result=await client.auth.signUp({email,password,options:{data:{display_name:displayName},emailRedirectTo:location.href.split("#")[0]}});
+          if(!result.error&&!result.data.session){say("Check your email to confirm your account, then return here to log in.");return}
+        }else result=await client.auth.signInWithPassword({email,password});
+        if(result.error){say(result.error.message);return}
+        updateAuth(result.data.user);
+        say(action==="signup"?"Welcome to AirLeo. Your account is ready.":"You are signed in.");
+      }
+      async function start(){
+        if(!window.supabase?.createClient){say("Community accounts are temporarily unavailable. You can still use all existing AirLeo features.");return}
+        client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+        setAuthTab("signup");
+        document.getElementById("airleo-signup").addEventListener("click",()=>runAuth("signup").catch(error=>say("Sign up failed. Please try again.")));
+        document.getElementById("airleo-login").addEventListener("click",()=>runAuth("login").catch(error=>say("Sign in failed. Please try again.")));
+        document.getElementById("airleo-tab-signup").addEventListener("click",()=>setAuthTab("signup"));
+        document.getElementById("airleo-tab-login").addEventListener("click",()=>setAuthTab("login"));
+        document.querySelectorAll("[data-open-auth]").forEach(link=>link.addEventListener("click",()=>setAuthTab(link.dataset.openAuth)));
+        document.getElementById("airleo-logout").addEventListener("click",async()=>{const {error}=await client.auth.signOut();if(error){say("Sign out failed. Please try again.");return}updateAuth(null);setAuthTab("signup");say("You have signed out.")});
+        document.getElementById("airleo-member-post-form").addEventListener("submit",async event=>{
+          event.preventDefault();
+          if(!currentUser)return;
+          const body=document.getElementById("airleo-member-post").value.trim();
+          if(!body)return;
+          const {error}=await client.from("airleo_community_posts").insert({author_id:currentUser.id,body});
+          document.getElementById("airleo-member-status").textContent=error?"Your submission could not be saved. Please try again.":"Thanks. Your post is awaiting Leo’s review.";
+          if(!error){document.getElementById("airleo-member-post").value="";loadMemberPosts()}
+        });
+        let choice=null;
+        try{choice=localStorage.getItem("airleo-analytics-consent")}catch(error){}
+        if(!choice){consent.hidden=false}
+        document.getElementById("airleo-consent-yes").addEventListener("click",()=>{try{localStorage.setItem("airleo-analytics-consent","yes")}catch(error){}consent.hidden=true;recordVisit()});
+        document.getElementById("airleo-consent-no").addEventListener("click",()=>{try{localStorage.setItem("airleo-analytics-consent","no")}catch(error){}consent.hidden=true});
+        document.getElementById("airleo-privacy-settings").addEventListener("click",()=>{consent.hidden=false});
+        await recordVisit();
+        loadPublicPosts();
+        const {data}=await client.auth.getSession();
+        updateAuth(data.session?.user||null);
+        client.auth.onAuthStateChange((_event,session)=>updateAuth(session?.user||null));
+      }
+      start().catch(error=>{console.error("AirLeo community startup failed:",error);say("Sign in and community services are temporarily unavailable. Please refresh and try again.");});
+    })();
   </script>
 </body>
 </html>
